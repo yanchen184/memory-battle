@@ -673,11 +673,10 @@ function OnlineLobby({ connectionState, onJoinGame, onBack }: OnlineLobbyProps) 
             <button
               onClick={() => setMode('create')}
               disabled={!connectionState.isConnected}
-              className="w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+              className="pixel-button w-full py-4 px-6 font-bold text-base disabled:opacity-50"
               style={{
-                background: 'linear-gradient(135deg, #00ff88 0%, #00f5ff 100%)',
-                boxShadow: '0 4px 30px rgba(0, 255, 136, 0.4)',
-                color: '#000',
+                background: '#6bcf7f',
+                color: 'var(--text-primary)',
               }}
             >
               <span className="text-2xl mr-2">🏠</span>
@@ -688,11 +687,10 @@ function OnlineLobby({ connectionState, onJoinGame, onBack }: OnlineLobbyProps) 
             <button
               onClick={() => setMode('join')}
               disabled={!connectionState.isConnected}
-              className="w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+              className="pixel-button w-full py-4 px-6 font-bold text-base disabled:opacity-50"
               style={{
-                background: 'linear-gradient(135deg, #ff00ff 0%, #ff6600 100%)',
-                boxShadow: '0 4px 30px rgba(255, 0, 255, 0.4)',
-                color: '#000',
+                background: '#ff6b9d',
+                color: 'var(--text-primary)',
               }}
             >
               <span className="text-2xl mr-2">🔑</span>
@@ -737,9 +735,13 @@ function OnlineLobby({ connectionState, onJoinGame, onBack }: OnlineLobbyProps) 
               type="text"
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
-              placeholder="輸入你的名字..."
+              placeholder="輸入名字..."
               maxLength={12}
-              className="w-full px-4 py-3 rounded-xl bg-[var(--bg-secondary)] border-2 border-transparent focus:border-[var(--neon-green)] outline-none transition-colors"
+              className="w-full px-4 py-3 bg-[var(--bg-card)] outline-none text-sm"
+              style={{
+                border: '3px solid var(--border-color)',
+                boxShadow: 'inset 2px 2px 0px rgba(0,0,0,0.1)',
+              }}
             />
           </div>
 

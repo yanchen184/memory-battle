@@ -109,16 +109,15 @@ function LobbyComponent({ onStartGame, isAIMode = false }: ExtendedLobbyProps) {
       {/* Title */}
       <h1
         ref={titleRef}
-        className="text-4xl md:text-6xl font-bold text-center mb-4"
-        style={{ color: isAIMode ? NEON_COLORS.GREEN : NEON_COLORS.CYAN }}
+        className="text-2xl md:text-4xl font-bold text-center mb-4 pixel-text-pink"
       >
-        {isAIMode ? '🤖 挑戰完美 AI' : '記憶翻牌對戰'}
+        {isAIMode ? '🤖 AI 對戰' : '🎮 記憶翻牌'}
       </h1>
 
-      <p className="text-[var(--text-secondary)] text-center mb-8 max-w-md">
+      <p className="text-[var(--text-secondary)] text-center mb-8 max-w-md text-xs leading-relaxed">
         {isAIMode 
-          ? 'AI 擁有完美記憶！看你能不能擊敗它！' 
-          : '挑戰你的記憶力！配對相同的卡片來獲得分數，成為最強記憶大師！'
+          ? 'AI 擁有完美記憶！' 
+          : '配對相同卡片！'
         }
       </p>
 
@@ -132,8 +131,7 @@ function LobbyComponent({ onStartGame, isAIMode = false }: ExtendedLobbyProps) {
         <div className="mb-6">
           <label
             htmlFor="player1"
-            className="block text-sm font-medium mb-2"
-            style={{ color: NEON_COLORS.CYAN }}
+            className="block text-xs font-bold mb-2 pixel-text-cyan uppercase"
           >
             {isAIMode ? '你的名字' : '玩家 1'}
           </label>
@@ -148,9 +146,11 @@ function LobbyComponent({ onStartGame, isAIMode = false }: ExtendedLobbyProps) {
               onChange={(e) => setPlayer1Name(e.target.value)}
               placeholder="輸入名字..."
               maxLength={12}
-              className="w-full pl-12 pr-4 py-3 rounded-xl bg-[var(--bg-secondary)] border-2 border-transparent focus:border-[var(--neon-cyan)] outline-none transition-colors"
+              className="w-full pl-12 pr-4 py-3 bg-[var(--bg-card)] outline-none text-sm"
               style={{
                 color: 'var(--text-primary)',
+                border: '3px solid var(--border-color)',
+                boxShadow: 'inset 2px 2px 0px rgba(0,0,0,0.1)',
               }}
             />
           </div>
@@ -161,8 +161,7 @@ function LobbyComponent({ onStartGame, isAIMode = false }: ExtendedLobbyProps) {
           <div className="mb-6">
             <label
               htmlFor="player2"
-              className="block text-sm font-medium mb-2"
-              style={{ color: NEON_COLORS.PINK }}
+              className="block text-xs font-bold mb-2 pixel-text-pink uppercase"
             >
               玩家 2
             </label>
@@ -177,9 +176,11 @@ function LobbyComponent({ onStartGame, isAIMode = false }: ExtendedLobbyProps) {
                 onChange={(e) => setPlayer2Name(e.target.value)}
                 placeholder="輸入名字..."
                 maxLength={12}
-                className="w-full pl-12 pr-4 py-3 rounded-xl bg-[var(--bg-secondary)] border-2 border-transparent focus:border-[var(--neon-pink)] outline-none transition-colors"
+                className="w-full pl-12 pr-4 py-3 bg-[var(--bg-card)] outline-none text-sm"
                 style={{
                   color: 'var(--text-primary)',
+                  border: '3px solid var(--border-color)',
+                  boxShadow: 'inset 2px 2px 0px rgba(0,0,0,0.1)',
                 }}
               />
             </div>
@@ -188,17 +189,18 @@ function LobbyComponent({ onStartGame, isAIMode = false }: ExtendedLobbyProps) {
 
         {/* AI 對手提示 - 只在 AI 模式顯示 */}
         {isAIMode && (
-          <div className="mb-6 p-4 rounded-xl" style={{
-            background: 'rgba(0, 255, 136, 0.1)',
-            border: '2px solid rgba(0, 255, 136, 0.3)',
+          <div className="mb-6 p-4" style={{
+            background: NEON_COLORS.GREEN,
+            border: '3px solid var(--border-color)',
+            boxShadow: 'var(--shadow-pixel)',
           }}>
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium" style={{ color: NEON_COLORS.GREEN }}>
+                <p className="text-xs font-bold text-[var(--text-primary)]">
                   你的對手
                 </p>
-                <p className="text-xs text-[var(--text-muted)] mt-1">
-                  完美記憶 AI 系統
+                <p className="text-xs opacity-70 mt-1">
+                  完美記憶 AI
                 </p>
               </div>
               <div className="text-4xl">🤖</div>
@@ -217,31 +219,17 @@ function LobbyComponent({ onStartGame, isAIMode = false }: ExtendedLobbyProps) {
                 key={option.size}
                 type="button"
                 onClick={() => setGridSize(option.size)}
-                className={`p-3 rounded-xl text-center transition-all duration-300 ${
-                  gridSize === option.size
-                    ? 'scale-105'
-                    : 'opacity-60 hover:opacity-100'
+                className={`pixel-button p-3 text-center text-xs ${
+                  gridSize === option.size ? '' : 'opacity-60 hover:opacity-100'
                 }`}
                 style={{
-                  background:
-                    gridSize === option.size
-                      ? `linear-gradient(135deg, ${NEON_COLORS.PURPLE}30 0%, ${NEON_COLORS.PINK}20 100%)`
-                      : 'rgba(255, 255, 255, 0.05)',
-                  border: `2px solid ${
-                    gridSize === option.size
-                      ? NEON_COLORS.PURPLE
-                      : 'rgba(255, 255, 255, 0.1)'
-                  }`,
-                  boxShadow:
-                    gridSize === option.size
-                      ? `0 0 20px ${NEON_COLORS.PURPLE}30`
-                      : 'none',
+                  background: gridSize === option.size ? NEON_COLORS.YELLOW : 'var(--bg-card)',
+                  borderColor: gridSize === option.size ? NEON_COLORS.PURPLE : 'var(--border-color)',
+                  color: gridSize === option.size ? 'var(--text-primary)' : 'var(--text-secondary)',
                 }}
               >
-                <span className="block text-lg font-bold">{option.label}</span>
-                <span className="text-xs text-[var(--text-muted)]">
-                  {option.pairs} 對
-                </span>
+                <span className="block text-base font-bold">{option.label}</span>
+                <span className="text-xs opacity-70">{option.pairs} 對</span>
               </button>
             ))}
           </div>
@@ -251,14 +239,13 @@ function LobbyComponent({ onStartGame, isAIMode = false }: ExtendedLobbyProps) {
         <button
           type="submit"
           disabled={isAnimating}
-          className="w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50"
+          className="pixel-button w-full py-4 font-bold text-base disabled:opacity-50"
           style={{
-            background: `linear-gradient(135deg, ${NEON_COLORS.CYAN} 0%, ${NEON_COLORS.PURPLE} 100%)`,
-            boxShadow: `0 4px 30px ${NEON_COLORS.CYAN}40`,
-            color: '#000',
+            background: NEON_COLORS.GREEN,
+            color: 'var(--text-primary)',
           }}
         >
-          {isAnimating ? '啟動中...' : '開始遊戲'}
+          {isAnimating ? '啟動中...' : '🎮 開始遊戲'}
         </button>
       </form>
 
