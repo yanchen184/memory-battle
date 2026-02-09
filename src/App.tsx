@@ -301,11 +301,10 @@ function AppContent() {
               setGameMode('local');
               navigate('/local');
             }}
-            className="w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            className="pixel-button w-full py-4 px-6 font-bold text-base"
             style={{
-              background: 'linear-gradient(135deg, #00f5ff 0%, #9d00ff 100%)',
-              boxShadow: '0 4px 30px rgba(0, 245, 255, 0.4)',
-              color: '#000',
+              background: '#6eb5ff',
+              color: 'var(--text-primary)',
             }}
           >
             <span className="text-2xl mr-2">🎮</span>
@@ -317,11 +316,10 @@ function AppContent() {
               setGameMode('ai');
               navigate('/ai');
             }}
-            className="w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            className="pixel-button w-full py-4 px-6 font-bold text-base"
             style={{
-              background: 'linear-gradient(135deg, #00ff88 0%, #00f5ff 100%)',
-              boxShadow: '0 4px 30px rgba(0, 255, 136, 0.4)',
-              color: '#000',
+              background: '#6bcf7f',
+              color: 'var(--text-primary)',
             }}
           >
             <span className="text-2xl mr-2">🤖</span>
@@ -333,11 +331,10 @@ function AppContent() {
               setGameMode('online');
               navigate('/online');
             }}
-            className="w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            className="pixel-button w-full py-4 px-6 font-bold text-base"
             style={{
-              background: 'linear-gradient(135deg, #ff00ff 0%, #ff6600 100%)',
-              boxShadow: '0 4px 30px rgba(255, 0, 255, 0.4)',
-              color: '#000',
+              background: '#ff6b9d',
+              color: 'var(--text-primary)',
             }}
           >
             <span className="text-2xl mr-2">🌐</span>
