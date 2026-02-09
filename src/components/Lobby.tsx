@@ -102,12 +102,11 @@ function LobbyComponent({ onStartGame }: ExtendedLobbyProps) {
         className="text-4xl md:text-6xl font-bold text-center mb-4"
         style={{ color: NEON_COLORS.CYAN }}
       >
-        Memory Battle
+        記憶翻牌對戰
       </h1>
 
       <p className="text-[var(--text-secondary)] text-center mb-8 max-w-md">
-        Challenge your memory in this 2-player card matching game.
-        Match pairs to score points and claim victory!
+        挑戰你的記憶力！配對相同的卡片來獲得分數，成為最強記憶大師！
       </p>
 
       {/* Form */}
@@ -123,7 +122,7 @@ function LobbyComponent({ onStartGame }: ExtendedLobbyProps) {
             className="block text-sm font-medium mb-2"
             style={{ color: NEON_COLORS.CYAN }}
           >
-            Player 1
+            玩家 1
           </label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xl">
@@ -134,7 +133,7 @@ function LobbyComponent({ onStartGame }: ExtendedLobbyProps) {
               id="player1"
               value={player1Name}
               onChange={(e) => setPlayer1Name(e.target.value)}
-              placeholder="Enter name..."
+              placeholder="輸入名字..."
               maxLength={12}
               className="w-full pl-12 pr-4 py-3 rounded-xl bg-[var(--bg-secondary)] border-2 border-transparent focus:border-[var(--neon-cyan)] outline-none transition-colors"
               style={{
@@ -151,7 +150,7 @@ function LobbyComponent({ onStartGame }: ExtendedLobbyProps) {
             className="block text-sm font-medium mb-2"
             style={{ color: NEON_COLORS.PINK }}
           >
-            Player 2
+            玩家 2
           </label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xl">
@@ -162,7 +161,7 @@ function LobbyComponent({ onStartGame }: ExtendedLobbyProps) {
               id="player2"
               value={player2Name}
               onChange={(e) => setPlayer2Name(e.target.value)}
-              placeholder="Enter name..."
+              placeholder="輸入名字..."
               maxLength={12}
               className="w-full pl-12 pr-4 py-3 rounded-xl bg-[var(--bg-secondary)] border-2 border-transparent focus:border-[var(--neon-pink)] outline-none transition-colors"
               style={{
@@ -175,7 +174,7 @@ function LobbyComponent({ onStartGame }: ExtendedLobbyProps) {
         {/* Grid Size Selection */}
         <div className="mb-8">
           <label className="block text-sm font-medium mb-3 text-[var(--text-secondary)]">
-            Board Size
+            棋盤大小
           </label>
           <div className="grid grid-cols-3 gap-3">
             {gridOptions.map((option) => (
@@ -206,7 +205,7 @@ function LobbyComponent({ onStartGame }: ExtendedLobbyProps) {
               >
                 <span className="block text-lg font-bold">{option.label}</span>
                 <span className="text-xs text-[var(--text-muted)]">
-                  {option.pairs} pairs
+                  {option.pairs} 對
                 </span>
               </button>
             ))}
@@ -224,13 +223,13 @@ function LobbyComponent({ onStartGame }: ExtendedLobbyProps) {
             color: '#000',
           }}
         >
-          {isAnimating ? 'Starting...' : 'Start Game'}
+          {isAnimating ? '啟動中...' : '開始遊戲'}
         </button>
       </form>
 
       {/* Version */}
       <p className="mt-8 text-xs text-[var(--text-muted)]">
-        Memory Battle v1.0.0
+        記憶翻牌對戰 v2.0.0
       </p>
     </div>
   );

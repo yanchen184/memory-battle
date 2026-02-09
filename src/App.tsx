@@ -215,10 +215,10 @@ function App() {
           className="text-4xl md:text-6xl font-bold text-center mb-4"
           style={{ color: '#00f5ff', textShadow: '0 0 30px rgba(0, 245, 255, 0.5)' }}
         >
-          Memory Battle
+          記憶翻牌對戰
         </h1>
         <p className="text-[var(--text-secondary)] text-center mb-8 max-w-md">
-          Choose your game mode
+          選擇遊戲模式
         </p>
 
         <div className="flex flex-col gap-4 w-full max-w-md">
@@ -232,7 +232,7 @@ function App() {
             }}
           >
             <span className="text-2xl mr-2">🎮</span>
-            Local 2P Battle
+            本地雙人對戰
           </button>
 
           <button
@@ -245,7 +245,7 @@ function App() {
             }}
           >
             <span className="text-2xl mr-2">🤖</span>
-            VS AI (Perfect Memory)
+            挑戰完美 AI
           </button>
 
           <button
@@ -258,7 +258,7 @@ function App() {
             }}
           >
             <span className="text-2xl mr-2">🌐</span>
-            Online Battle
+            線上對戰
           </button>
 
           <div className="mt-4 flex items-center justify-center gap-2 text-[var(--text-muted)]">
@@ -269,7 +269,7 @@ function App() {
         </div>
 
         <p className="mt-8 text-xs text-[var(--text-muted)]">
-          Memory Battle v2.0.0 - Online Edition
+          記憶翻牌對戰 v2.0.0 - 線上版
         </p>
       </div>
     );
@@ -339,13 +339,13 @@ function App() {
 
         <footer className="game-footer p-4 text-center">
           <p className="text-xs text-[var(--text-muted)]">
-            Pairs matched: {gameState.matchedPairs} / {gameState.totalPairs}
+            已配對：{gameState.matchedPairs} / {gameState.totalPairs}
           </p>
           <button
             onClick={handleExit}
             className="mt-2 text-xs text-[var(--neon-pink)] hover:underline"
           >
-            Back to Menu
+            返回選單
           </button>
         </footer>
 
@@ -481,7 +481,7 @@ function App() {
             </div>
             {!isMyTurn && roomState.status === 'playing' && (
               <div className="mt-2 text-center text-[var(--text-muted)]">
-                Waiting for opponent's move...
+                等待對手行動...
               </div>
             )}
           </div>
@@ -498,13 +498,13 @@ function App() {
 
         <footer className="game-footer p-4 text-center">
           <p className="text-xs text-[var(--text-muted)]">
-            Room: {roomState.id} | Pairs matched: {roomState.matchedPairs} / {roomState.totalPairs}
+            房間：{roomState.id} | 已配對：{roomState.matchedPairs} / {roomState.totalPairs}
           </p>
           <button
             onClick={handleExit}
             className="mt-2 text-xs text-[var(--neon-pink)] hover:underline"
           >
-            Leave Game
+            離開遊戲
           </button>
         </footer>
 

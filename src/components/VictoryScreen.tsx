@@ -165,7 +165,7 @@ function VictoryScreenComponent({
             color: isDraw ? NEON_COLORS.YELLOW : NEON_COLORS.GREEN,
           }}
         >
-          {isDraw ? 'DRAW!' : 'VICTORY!'}
+          {isDraw ? '平手！' : '勝利！'}
         </h1>
 
         {/* Winner info */}
@@ -176,7 +176,7 @@ function VictoryScreenComponent({
           {isDraw ? (
             <div className="text-center">
               <p className="text-xl text-[var(--text-secondary)] mb-4">
-                Both players tied!
+                雙方平手！
               </p>
               <div className="flex justify-center items-center gap-4 text-4xl">
                 <span>{winner.avatar}</span>
@@ -203,7 +203,7 @@ function VictoryScreenComponent({
               >
                 {winner.name}
               </p>
-              <p className="text-lg text-[var(--text-secondary)]">wins the game!</p>
+              <p className="text-lg text-[var(--text-secondary)]">贏得勝利！</p>
 
               <div className="mt-6 flex justify-center items-center gap-8">
                 <div className="text-center">
@@ -215,7 +215,7 @@ function VictoryScreenComponent({
                     {finalScores[0] > finalScores[1] ? finalScores[0] : finalScores[1]}
                   </p>
                 </div>
-                <span className="text-2xl text-[var(--text-muted)]">vs</span>
+                <span className="text-2xl text-[var(--text-muted)]">對</span>
                 <div className="text-center">
                   <p className="text-sm text-[var(--text-muted)]">{loser.name}</p>
                   <p
@@ -241,7 +241,7 @@ function VictoryScreenComponent({
               color: '#000',
             }}
           >
-            Play Again
+            再玩一次
           </button>
           <button
             onClick={onExit}
@@ -252,7 +252,7 @@ function VictoryScreenComponent({
               color: 'var(--text-primary)',
             }}
           >
-            Exit
+            返回選單
           </button>
         </div>
       </div>
