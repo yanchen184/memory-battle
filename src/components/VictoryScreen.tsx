@@ -160,12 +160,12 @@ function VictoryScreenComponent({
         {/* Title */}
         <h1
           ref={titleRef}
-          className="text-5xl md:text-7xl font-bold mb-8"
+          className="text-3xl md:text-5xl font-bold mb-8"
           style={{
             color: isDraw ? NEON_COLORS.YELLOW : NEON_COLORS.GREEN,
           }}
         >
-          {isDraw ? '平手！' : '勝利！'}
+          {isDraw ? '🤝 平手！' : '🎉 勝利！'}
         </h1>
 
         {/* Winner info */}
@@ -234,25 +234,23 @@ function VictoryScreenComponent({
         <div className="flex gap-4 justify-center mt-8">
           <button
             onClick={onPlayAgain}
-            className="px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105"
+            className="pixel-button px-8 py-3 font-bold text-base"
             style={{
-              background: `linear-gradient(135deg, ${NEON_COLORS.CYAN} 0%, ${NEON_COLORS.BLUE} 100%)`,
-              boxShadow: `0 4px 20px ${NEON_COLORS.CYAN}50`,
-              color: '#000',
-            }}
-          >
-            再玩一次
-          </button>
-          <button
-            onClick={onExit}
-            className="px-8 py-3 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105"
-            style={{
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: '2px solid rgba(255, 255, 255, 0.3)',
+              background: NEON_COLORS.GREEN,
               color: 'var(--text-primary)',
             }}
           >
-            返回選單
+            🎮 再玩一次
+          </button>
+          <button
+            onClick={onExit}
+            className="pixel-button px-8 py-3 font-bold text-base"
+            style={{
+              background: 'var(--bg-card)',
+              color: 'var(--text-primary)',
+            }}
+          >
+            🏠 返回選單
           </button>
         </div>
       </div>
