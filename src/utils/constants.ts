@@ -67,22 +67,26 @@ export const DEFAULT_PLAYER = {
 } as const;
 
 // ============================================
-// Colors
+// Colors - Pixel Cute Adventure Theme 🎨
 // ============================================
 
-export const NEON_COLORS = {
-  CYAN: '#00f5ff',
-  PINK: '#ff00ff',
-  PURPLE: '#9d00ff',
-  BLUE: '#4d4dff',
-  GREEN: '#00ff88',
-  YELLOW: '#ffff00',
-  ORANGE: '#ff6600',
+export const PIXEL_COLORS = {
+  PINK: '#ff6b9d',
+  YELLOW: '#ffd93d',
+  GREEN: '#6bcf7f',
+  BLUE: '#6eb5ff',
+  PURPLE: '#c084fc',
+  ORANGE: '#ff9966',
+  RED: '#ff6b6b',
+  CYAN: '#4dd4ff',
 } as const;
 
+// Backward compatibility alias
+export const NEON_COLORS = PIXEL_COLORS;
+
 export const PLAYER_COLORS = {
-  PLAYER_1: NEON_COLORS.CYAN,
-  PLAYER_2: NEON_COLORS.PINK,
+  PLAYER_1: PIXEL_COLORS.CYAN,
+  PLAYER_2: PIXEL_COLORS.PINK,
 } as const;
 
 // ============================================

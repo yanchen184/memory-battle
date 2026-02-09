@@ -2,71 +2,90 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom CSS Variables for Neon Theme */
+/* 🎮 Pixel Cute Adventure Theme */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 :root {
-  /* Base Colors */
-  --bg-primary: #0a0a0f;
-  --bg-secondary: #12121a;
-  --bg-card: #1a1a2e;
-  --bg-card-hover: #252540;
+  /* 🎨 Pixel Adventure Color Palette */
+  --pixel-pink: #ff6b9d;
+  --pixel-yellow: #ffd93d;
+  --pixel-green: #6bcf7f;
+  --pixel-blue: #6eb5ff;
+  --pixel-purple: #c084fc;
+  --pixel-orange: #ff9966;
+  --pixel-red: #ff6b6b;
+  --pixel-cyan: #4dd4ff;
 
-  /* Neon Colors */
-  --neon-cyan: #00f5ff;
-  --neon-pink: #ff00ff;
-  --neon-purple: #9d00ff;
-  --neon-blue: #4d4dff;
-  --neon-green: #00ff88;
-  --neon-yellow: #ffff00;
-  --neon-orange: #ff6600;
+  /* 🌈 Background */
+  --bg-primary: #fef3e2;
+  --bg-secondary: #fff8e7;
+  --bg-card: #ffffff;
+  --bg-pattern: #ffedc4;
 
-  /* Text Colors */
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-muted: rgba(255, 255, 255, 0.4);
+  /* ✏️ Text */
+  --text-primary: #2d3436;
+  --text-secondary: #636e72;
+  --text-muted: #95a5a6;
 
-  /* Border Colors */
-  --border-color: rgba(255, 255, 255, 0.1);
+  /* 🔲 Borders */
+  --border-color: #2d3436;
+  --border-width: 3px;
+  
+  /* 🎯 Shadows */
+  --shadow-pixel: 4px 4px 0px var(--border-color);
+  --shadow-pixel-hover: 6px 6px 0px var(--border-color);
+  --shadow-pixel-pressed: 2px 2px 0px var(--border-color);
 
-  /* Shadows & Glows */
-  --glow-cyan: 0 0 20px rgba(0, 245, 255, 0.5), 0 0 40px rgba(0, 245, 255, 0.3);
-  --glow-pink: 0 0 20px rgba(255, 0, 255, 0.5), 0 0 40px rgba(255, 0, 255, 0.3);
-  --glow-purple: 0 0 20px rgba(157, 0, 255, 0.5), 0 0 40px rgba(157, 0, 255, 0.3);
-  --glow-green: 0 0 20px rgba(0, 255, 136, 0.5), 0 0 40px rgba(0, 255, 136, 0.3);
-
-  /* Card Dimensions */
+  /* 🃏 Card Dimensions */
   --card-width: 100px;
   --card-height: 140px;
   --card-gap: 12px;
 
-  /* Animation Durations */
-  --flip-duration: 0.6s;
-  --match-duration: 0.8s;
+  /* ⏱️ Animation Durations */
+  --flip-duration: 0.4s;
+  --match-duration: 0.6s;
 
-  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  line-height: 1.5;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  line-height: 1.8;
   font-weight: 400;
-  color-scheme: dark;
+  color-scheme: light;
   color: var(--text-primary);
   background-color: var(--bg-primary);
   font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: grayscale;
+  font-smooth: never;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }
 
 body {
   min-height: 100vh;
   background: var(--bg-primary);
-  background-image:
-    radial-gradient(ellipse at 50% 0%, rgba(0, 245, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(ellipse at 0% 100%, rgba(255, 0, 255, 0.08) 0%, transparent 40%),
-    radial-gradient(ellipse at 100% 100%, rgba(157, 0, 255, 0.08) 0%, transparent 40%);
+  /* 像素網格背景 */
+  background-image: 
+    repeating-linear-gradient(
+      0deg, 
+      transparent, 
+      transparent 20px, 
+      var(--bg-pattern) 20px, 
+      var(--bg-pattern) 21px
+    ),
+    repeating-linear-gradient(
+      90deg, 
+      transparent, 
+      transparent 20px, 
+      var(--bg-pattern) 20px, 
+      var(--bg-pattern) 21px
+    );
   overflow-x: hidden;
 }
 
@@ -75,150 +94,174 @@ body {
   min-height: 100vh;
 }
 
-/* Utility Classes */
-.neon-text-cyan {
-  color: var(--neon-cyan);
-  text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan);
+/* 🎨 Utility Classes */
+.pixel-text-pink {
+  color: var(--pixel-pink);
 }
 
-.neon-text-pink {
-  color: var(--neon-pink);
-  text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+.pixel-text-yellow {
+  color: var(--pixel-yellow);
 }
 
-.neon-text-purple {
-  color: var(--neon-purple);
-  text-shadow: 0 0 10px var(--neon-purple), 0 0 20px var(--neon-purple);
+.pixel-text-green {
+  color: var(--pixel-green);
 }
 
-.neon-text-green {
-  color: var(--neon-green);
-  text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
+.pixel-text-blue {
+  color: var(--pixel-blue);
 }
 
-.neon-border-cyan {
-  border-color: var(--neon-cyan);
-  box-shadow: var(--glow-cyan);
+.pixel-border-pink {
+  border: var(--border-width) solid var(--pixel-pink);
+  box-shadow: var(--shadow-pixel);
 }
 
-.neon-border-pink {
-  border-color: var(--neon-pink);
-  box-shadow: var(--glow-pink);
+.pixel-border-green {
+  border: var(--border-width) solid var(--pixel-green);
+  box-shadow: var(--shadow-pixel);
+}
+
+.pixel-border-blue {
+  border: var(--border-width) solid var(--pixel-blue);
+  box-shadow: var(--shadow-pixel);
 }
 
 .glass-panel {
-  background: rgba(26, 26, 46, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background: var(--bg-card);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 0;
+  box-shadow: var(--shadow-pixel);
 }
 
-/* Scrollbar Styling */
+/* 🔲 Pixel Button Base */
+.pixel-button {
+  border: var(--border-width) solid var(--border-color);
+  border-radius: 0;
+  box-shadow: var(--shadow-pixel);
+  transition: all 0.1s steps(1);
+  cursor: pointer;
+  font-family: 'Press Start 2P', monospace;
+  text-transform: uppercase;
+}
+
+.pixel-button:hover {
+  box-shadow: var(--shadow-pixel-hover);
+  transform: translate(-2px, -2px);
+}
+
+.pixel-button:active {
+  box-shadow: var(--shadow-pixel-pressed);
+  transform: translate(2px, 2px);
+}
+
+/* 🖱️ Scrollbar Styling - Pixel Style */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-track {
   background: var(--bg-secondary);
+  border: var(--border-width) solid var(--border-color);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--neon-purple);
-  border-radius: 4px;
+  background: var(--pixel-purple);
+  border: var(--border-width) solid var(--border-color);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--neon-pink);
+  background: var(--pixel-pink);
 }
 
-/* Selection */
+/* ✨ Selection */
 ::selection {
-  background: var(--neon-purple);
-  color: white;
+  background: var(--pixel-yellow);
+  color: var(--text-primary);
 }
 
-/* Animation Keyframes */
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(0, 245, 255, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 40px rgba(0, 245, 255, 0.8), 0 0 60px rgba(0, 245, 255, 0.4);
-  }
-}
-
-@keyframes float {
+/* 🎬 Animation Keyframes - Pixel Style */
+@keyframes pixel-bounce {
   0%, 100% {
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
 }
 
-@keyframes shake {
+@keyframes pixel-shake {
   0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-  20%, 40%, 60%, 80% { transform: translateX(5px); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
 }
 
-@keyframes particle-rise {
-  0% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-100px) scale(0);
-  }
-}
-
-@keyframes rainbow-border {
-  0% { border-color: var(--neon-cyan); }
-  25% { border-color: var(--neon-pink); }
-  50% { border-color: var(--neon-purple); }
-  75% { border-color: var(--neon-green); }
-  100% { border-color: var(--neon-cyan); }
-}
-
-@keyframes shimmer {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-@keyframes glow-pulse {
+@keyframes pixel-flash {
   0%, 100% {
-    opacity: 0.5;
-    filter: blur(10px);
+    opacity: 1;
   }
   50% {
-    opacity: 0.8;
-    filter: blur(15px);
+    opacity: 0.5;
   }
 }
 
-@keyframes card-idle-float {
-  0%, 100% {
-    transform: translateY(0) rotateX(0) rotateY(0);
+@keyframes pixel-spin {
+  0% {
+    transform: rotate(0deg);
   }
-  25% {
-    transform: translateY(-2px) rotateX(1deg) rotateY(-1deg);
-  }
-  75% {
-    transform: translateY(-2px) rotateX(-1deg) rotateY(1deg);
+  100% {
+    transform: rotate(360deg);
   }
 }
 
-/* Responsive Card Sizes */
+@keyframes pixel-grow {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes rainbow-cycle {
+  0% { border-color: var(--pixel-pink); }
+  25% { border-color: var(--pixel-yellow); }
+  50% { border-color: var(--pixel-green); }
+  75% { border-color: var(--pixel-blue); }
+  100% { border-color: var(--pixel-pink); }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* 📱 Responsive Card Sizes */
 @media (max-width: 640px) {
   :root {
     --card-width: 70px;
     --card-height: 100px;
     --card-gap: 8px;
+    font-size: 10px;
   }
 }
 
@@ -227,5 +270,33 @@ body {
     --card-width: 85px;
     --card-height: 120px;
     --card-gap: 10px;
+    font-size: 12px;
   }
+}
+
+@media (min-width: 1025px) {
+  :root {
+    font-size: 14px;
+  }
+}
+
+/* 🎮 Pixel Perfect Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Press Start 2P', monospace;
+  line-height: 1.4;
+  font-weight: 400;
+}
+
+button, input, textarea {
+  font-family: 'Press Start 2P', monospace;
+}
+
+/* 🔧 Disable smooth animations (pixel style) */
+* {
+  transition-timing-function: steps(4) !important;
+}
+
+/* Keep smooth for card flips only */
+.card-flip-smooth {
+  transition-timing-function: ease-in-out !important;
 }
