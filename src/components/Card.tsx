@@ -194,13 +194,13 @@ function CardComponent({
             style={{
               backfaceVisibility: 'hidden',
               transform: 'rotateY(180deg)',
-              background: playerColor || 'var(--bg-card)',
-              border: `3px solid ${playerColor || 'var(--border-color)'}`,
+              background: playerColor || (card.isFlipped && !card.isMatched ? '#6bcf7f' : 'var(--bg-card)'),
+              border: `3px solid ${playerColor || (card.isFlipped && !card.isMatched ? '#6bcf7f' : 'var(--border-color)')}`,
               boxShadow: card.isMatched ? 'var(--shadow-pixel)' : 'var(--shadow-pixel)',
             }}
           >
             {/* Symbol */}
-            {isRevealed && (
+            {isRevealed && card.symbol && (
               <div
                 className="text-5xl select-none"
                 style={{
@@ -208,6 +208,12 @@ function CardComponent({
                 }}
               >
                 {card.symbol}
+              </div>
+            )}
+            {/* 🆕 載入狀態（翻開但還沒收到 symbol） */}
+            {isRevealed && !card.symbol && (
+              <div className="text-2xl text-[var(--text-muted)] animate-pulse">
+                ...
               </div>
             )}
           </div>

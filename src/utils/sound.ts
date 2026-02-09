@@ -32,21 +32,30 @@ class SoundManager {
   playFlip() {
     if (!this.enabled || !this.audioContext) return;
 
-    const ctx = this.audioContext;
-    const oscillator = ctx.createOscillator();
-    const gainNode = ctx.createGain();
+    try {
+      // Resume audioContext if suspended (browser autoplay policy)
+      if (this.audioContext.state === 'suspended') {
+        this.audioContext.resume();
+      }
 
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
+      const ctx = this.audioContext;
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
 
-    oscillator.frequency.value = 800;
-    oscillator.type = 'square';
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
 
-    gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+      oscillator.frequency.value = 800;
+      oscillator.type = 'square';
 
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + 0.1);
+      gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + 0.1);
+    } catch (e) {
+      console.warn('[Sound] Failed to play flip:', e);
+    }
   }
 
   /**
