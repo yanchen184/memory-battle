@@ -29,7 +29,7 @@ interface FlyingCardData {
 // Log version on startup
 console.log('%c Memory Battle v2.0.0 - Online Edition ', 'background: #00f5ff; color: #000; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
 
-import { HashRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { HashRouter, useNavigate, useLocation } from 'react-router-dom';
 
 type GameMode = 'select' | 'local' | 'ai' | 'online';
 
@@ -219,7 +219,7 @@ function AppContent() {
               x: rect?.left || window.innerWidth / 2,
               y: rect?.top || window.innerHeight / 2,
             },
-            toPlayerNumber: (card.matchedBy !== null ? (card.matchedBy + 1) : roomState.currentPlayerIndex + 1) as PlayerTurn,
+            toPlayerNumber: ((card as any).matchedBy !== null ? ((card as any).matchedBy + 1) : roomState.currentPlayerIndex + 1) as PlayerTurn,
           };
         });
 
@@ -498,7 +498,7 @@ function AppContent() {
       symbol: card.symbol || '?',
       isFlipped: card.isFlipped,
       isMatched: card.isMatched,
-      matchedBy: card.matchedBy !== null ? (card.matchedBy + 1) as PlayerTurn : null, // 轉換索引 0/1 為 1/2
+      matchedBy: (card as any).matchedBy !== null ? ((card as any).matchedBy + 1) as PlayerTurn : null, // 轉換索引 0/1 為 1/2
     }));
 
     // Convert players
@@ -1015,8 +1015,6 @@ function WaitingRoom({ roomState, onLeave }: WaitingRoomProps) {
       </div>
     </div>
   );
-}
-
 }
 
 // 包裝在 HashRouter 中
