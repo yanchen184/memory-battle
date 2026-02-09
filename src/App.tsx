@@ -316,49 +316,53 @@ function App() {
 
     return (
       <div className="game-container min-h-screen flex flex-col">
-        <header className="game-header p-4 md:p-6">
+        {/* 對手區域（上方） */}
+        <header className="game-header-opponent p-4 md:p-6 border-b border-[var(--border-color)]">
           <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <div className="flex-1">
-                <PlayerInfo player={player1} isCurrentTurn={currentTurn === 1} playerNumber={1} />
-              </div>
-              <div className="flex justify-center lg:flex-none">
-                <Timer timeLeft={turnTimeLeft} maxTime={GAME_CONFIG.TURN_TIME_LIMIT} isWarning={isTimerWarning} />
-              </div>
-              <div className="flex-1">
-                <PlayerInfo player={player2} isCurrentTurn={currentTurn === 2} playerNumber={2} />
-              </div>
-            </div>
-            <div className="mt-4">
-              <ScoreBoard
-                player1Score={player1.score}
-                player2Score={player2.score}
-                player1Name={player1.name}
-                player2Name={player2.name}
-              />
-            </div>
+            <PlayerInfo player={player2} isCurrentTurn={currentTurn === 2} playerNumber={2} />
           </div>
         </header>
 
-        <main className="game-main flex-1 flex items-center justify-center p-4 md:p-6">
+        {/* 遊戲區域（中間） */}
+        <main className="game-main flex-1 flex flex-col items-center justify-center p-4 md:p-6">
+          <div className="mb-4">
+            <Timer timeLeft={turnTimeLeft} maxTime={GAME_CONFIG.TURN_TIME_LIMIT} isWarning={isTimerWarning} />
+          </div>
+          
           <GameBoard
             cards={cards}
             onCardClick={handleCardClick}
             disabled={isProcessing || gameState.phase === 'GAME_OVER'}
             gridCols={gridCols}
           />
+
+          <div className="mt-4">
+            <ScoreBoard
+              player1Score={player1.score}
+              player2Score={player2.score}
+              player1Name={player1.name}
+              player2Name={player2.name}
+            />
+          </div>
         </main>
 
-        <footer className="game-footer p-4 text-center">
-          <p className="text-xs text-[var(--text-muted)]">
-            已配對：{gameState.matchedPairs} / {gameState.totalPairs}
-          </p>
-          <button
-            onClick={handleExit}
-            className="mt-2 text-xs text-[var(--neon-pink)] hover:underline"
-          >
-            返回選單
-          </button>
+        {/* 玩家區域（下方） */}
+        <footer className="game-footer-player p-4 md:p-6 border-t border-[var(--border-color)]">
+          <div className="max-w-6xl mx-auto">
+            <PlayerInfo player={player1} isCurrentTurn={currentTurn === 1} playerNumber={1} />
+            
+            <div className="mt-2 text-center">
+              <p className="text-xs text-[var(--text-muted)]">
+                已配對：{gameState.matchedPairs} / {gameState.totalPairs}
+              </p>
+              <button
+                onClick={handleExit}
+                className="mt-2 text-xs text-[var(--neon-pink)] hover:underline"
+              >
+                返回選單
+              </button>
+            </div>
+          </div>
         </footer>
 
         {gameState.phase === 'GAME_OVER' && victoryData && (
@@ -456,68 +460,77 @@ function App() {
 
     return (
       <div className="game-container min-h-screen flex flex-col">
-        <header className="game-header p-4 md:p-6">
+        {/* 對手區域（上方） */}
+        <header className="game-header-opponent p-4 md:p-6 border-b border-[var(--border-color)]">
           <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-              <div className="flex-1">
-                <PlayerInfo
-                  player={player1}
-                  isCurrentTurn={currentPlayerIdx === 0}
-                  playerNumber={1}
-                />
-                {playerIndex === 0 && <span className="text-xs text-[var(--neon-cyan)] ml-2">(You)</span>}
-              </div>
-              <div className="flex justify-center lg:flex-none">
-                <Timer
-                  timeLeft={roomState.turnTimeLeft}
-                  maxTime={GAME_CONFIG.TURN_TIME_LIMIT}
-                  isWarning={isTimerWarning}
-                />
-              </div>
-              <div className="flex-1">
-                <PlayerInfo
-                  player={player2}
-                  isCurrentTurn={currentPlayerIdx === 1}
-                  playerNumber={2}
-                />
-                {playerIndex === 1 && <span className="text-xs text-[var(--neon-pink)] ml-2">(You)</span>}
-              </div>
-            </div>
-            <div className="mt-4">
-              <ScoreBoard
-                player1Score={player1.score}
-                player2Score={player2.score}
-                player1Name={player1.name}
-                player2Name={player2.name}
+            <div className="flex items-center justify-between">
+              <PlayerInfo
+                player={playerIndex === 0 ? player2 : player1}
+                isCurrentTurn={playerIndex === 0 ? currentPlayerIdx === 1 : currentPlayerIdx === 0}
+                playerNumber={playerIndex === 0 ? 2 : 1}
               />
+              <span className="text-xs text-[var(--text-muted)]">對手</span>
             </div>
-            {!isMyTurn && roomState.status === 'playing' && (
-              <div className="mt-2 text-center text-[var(--text-muted)]">
-                等待對手行動...
-              </div>
-            )}
           </div>
         </header>
 
-        <main className="game-main flex-1 flex items-center justify-center p-4 md:p-6">
+        {/* 遊戲區域（中間） */}
+        <main className="game-main flex-1 flex flex-col items-center justify-center p-4 md:p-6">
+          <div className="mb-4">
+            <Timer
+              timeLeft={roomState.turnTimeLeft}
+              maxTime={GAME_CONFIG.TURN_TIME_LIMIT}
+              isWarning={isTimerWarning}
+            />
+          </div>
+
+          {!isMyTurn && roomState.status === 'playing' && (
+            <div className="mb-2 text-center text-[var(--text-muted)]">
+              等待對手行動...
+            </div>
+          )}
+          
           <GameBoard
             cards={onlineCards}
             onCardClick={handleCardClick}
             disabled={!isMyTurn || roomState.status === 'finished'}
             gridCols={gridCols}
           />
+
+          <div className="mt-4">
+            <ScoreBoard
+              player1Score={player1.score}
+              player2Score={player2.score}
+              player1Name={player1.name}
+              player2Name={player2.name}
+            />
+          </div>
         </main>
 
-        <footer className="game-footer p-4 text-center">
-          <p className="text-xs text-[var(--text-muted)]">
-            房間：{roomState.id} | 已配對：{roomState.matchedPairs} / {roomState.totalPairs}
-          </p>
-          <button
-            onClick={handleExit}
-            className="mt-2 text-xs text-[var(--neon-pink)] hover:underline"
-          >
-            離開遊戲
-          </button>
+        {/* 玩家區域（下方） */}
+        <footer className="game-footer-player p-4 md:p-6 border-t border-[var(--border-color)]">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-center justify-between">
+              <PlayerInfo
+                player={playerIndex === 0 ? player1 : player2}
+                isCurrentTurn={playerIndex === 0 ? currentPlayerIdx === 0 : currentPlayerIdx === 1}
+                playerNumber={playerIndex === 0 ? 1 : 2}
+              />
+              <span className="text-xs text-[var(--neon-cyan)]">你</span>
+            </div>
+            
+            <div className="mt-2 text-center">
+              <p className="text-xs text-[var(--text-muted)]">
+                房間：{roomState.id} | 已配對：{roomState.matchedPairs} / {roomState.totalPairs}
+              </p>
+              <button
+                onClick={handleExit}
+                className="mt-2 text-xs text-[var(--neon-pink)] hover:underline"
+              >
+                離開遊戲
+              </button>
+            </div>
+          </div>
         </footer>
 
         {roomState.status === 'finished' && onlineVictoryData && (
