@@ -149,7 +149,7 @@ function App() {
       } catch (error) {
         console.error('[AI] Error making move:', error);
       }
-    }, 1000); // 1 秒延遲
+    }, 300); // 300ms 延遲（快速反應）
 
     return () => clearTimeout(aiMoveTimer);
   }, [isAIMode, gameState, isProcessing, flipCard]);
