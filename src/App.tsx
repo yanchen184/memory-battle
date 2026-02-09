@@ -561,6 +561,24 @@ function AppContent() {
 
         {/* 遊戲區域（中間） */}
         <main className="game-main flex-1 flex flex-col items-center justify-center p-4 md:p-6">
+          {/* 🔥 明顯的回合指示器 */}
+          <div className="mb-4 text-center">
+            <div 
+              className="pixel-button inline-block px-6 py-3 mb-2"
+              style={{
+                background: isMyTurn ? '#6bcf7f' : '#666',
+                color: 'var(--text-primary)',
+                fontSize: '1.25rem',
+                fontWeight: 'bold',
+              }}
+            >
+              {isMyTurn ? '▶ 你的回合！' : '⏸ 對手回合'}
+            </div>
+            <p className="text-xs text-[var(--text-muted)]">
+              {isMyTurn ? '點擊兩張卡片來配對' : '等待對手行動...'}
+            </p>
+          </div>
+
           <div className="mb-4">
             <Timer
               timeLeft={roomState.turnTimeLeft}
@@ -568,12 +586,6 @@ function AppContent() {
               isWarning={isTimerWarning}
             />
           </div>
-
-          {!isMyTurn && roomState.status === 'playing' && (
-            <div className="mb-2 text-center text-[var(--text-muted)]">
-              等待對手行動...
-            </div>
-          )}
           
           <GameBoard
             cards={onlineCards}
