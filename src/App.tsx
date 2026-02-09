@@ -131,48 +131,96 @@ function App() {
     // 只在遊戲進行中觸發
     if (gameMode === 'select') return;
     
-    // 檢查是否有新的配對
-    if (gameState.matchedPairs <= prevMatchedPairsRef.current) return;
+    // 本地/AI 模式
+    if (gameMode === 'local' || gameMode === 'ai') {
+      // 檢查是否有新的配對
+      if (gameState.matchedPairs <= prevMatchedPairsRef.current) return;
 
-    // 找到剛配對成功的卡片（所有 isMatched 為 true 的卡片）
-    const allMatchedCards = gameState.cards.filter((card) => card.isMatched);
-    
-    // 計算剛剛新增的配對（每次配對是 2 張）
-    const newMatchedCount = allMatchedCards.length - (prevMatchedPairsRef.current * 2);
-    
-    if (newMatchedCount >= 2) {
-      // 獲取最後配對的兩張卡片
-      const lastTwo = allMatchedCards.slice(-2);
+      // 找到剛配對成功的卡片（所有 isMatched 為 true 的卡片）
+      const allMatchedCards = gameState.cards.filter((card) => card.isMatched);
       
-      // 為每張卡片創建飛行動畫
-      const newFlyingCards = lastTwo.map((card, index) => {
-        // 獲取卡片在螢幕上的位置
-        const cardElement = document.querySelector(`[data-card-id="${card.id}"]`);
-        const rect = cardElement?.getBoundingClientRect();
+      // 計算剛剛新增的配對（每次配對是 2 張）
+      const newMatchedCount = allMatchedCards.length - (prevMatchedPairsRef.current * 2);
+      
+      if (newMatchedCount >= 2) {
+        // 獲取最後配對的兩張卡片
+        const lastTwo = allMatchedCards.slice(-2);
         
-        return {
-          id: `flying-${card.id}-${Date.now()}-${index}`,
-          symbol: card.symbol,
-          fromPosition: {
-            x: rect?.left || window.innerWidth / 2,
-            y: rect?.top || window.innerHeight / 2,
-          },
-          toPlayerNumber: (card.matchedBy || gameState.currentTurn) as PlayerTurn,
-        };
-      });
+        // 為每張卡片創建飛行動畫
+        const newFlyingCards = lastTwo.map((card, index) => {
+          // 獲取卡片在螢幕上的位置
+          const cardElement = document.querySelector(`[data-card-id="${card.id}"]`);
+          const rect = cardElement?.getBoundingClientRect();
+          
+          return {
+            id: `flying-${card.id}-${Date.now()}-${index}`,
+            symbol: card.symbol,
+            fromPosition: {
+              x: rect?.left || window.innerWidth / 2,
+              y: rect?.top || window.innerHeight / 2,
+            },
+            toPlayerNumber: (card.matchedBy || gameState.currentTurn) as PlayerTurn,
+          };
+        });
 
-      setFlyingCards((prev) => [...prev, ...newFlyingCards]);
-      
-      // 自動清理（備用機制，防止動畫卡住）
-      setTimeout(() => {
-        setFlyingCards((prev) => 
-          prev.filter((fc) => !newFlyingCards.some((nfc) => nfc.id === fc.id))
-        );
-      }, 2000);
+        setFlyingCards((prev) => [...prev, ...newFlyingCards]);
+        
+        // 自動清理（備用機制，防止動畫卡住）
+        setTimeout(() => {
+          setFlyingCards((prev) => 
+            prev.filter((fc) => !newFlyingCards.some((nfc) => nfc.id === fc.id))
+          );
+        }, 2000);
+      }
+
+      prevMatchedPairsRef.current = gameState.matchedPairs;
     }
+    
+    // 線上模式
+    if (gameMode === 'online' && roomState) {
+      // 檢查是否有新的配對
+      if (roomState.matchedPairs <= prevMatchedPairsRef.current) return;
 
-    prevMatchedPairsRef.current = gameState.matchedPairs;
-  }, [gameState.matchedPairs, gameState.cards, gameState.currentTurn, gameMode]);
+      // 找到剛配對成功的卡片
+      const allMatchedCards = roomState.cards.filter((card) => card.isMatched);
+      
+      // 計算剛剛新增的配對（每次配對是 2 張）
+      const newMatchedCount = allMatchedCards.length - (prevMatchedPairsRef.current * 2);
+      
+      if (newMatchedCount >= 2) {
+        // 獲取最後配對的兩張卡片
+        const lastTwo = allMatchedCards.slice(-2);
+        
+        // 為每張卡片創建飛行動畫
+        const newFlyingCards = lastTwo.map((card, index) => {
+          // 獲取卡片在螢幕上的位置
+          const cardElement = document.querySelector(`[data-card-id="${card.id}"]`);
+          const rect = cardElement?.getBoundingClientRect();
+          
+          return {
+            id: `flying-online-${card.id}-${Date.now()}-${index}`,
+            symbol: card.symbol || '?',
+            fromPosition: {
+              x: rect?.left || window.innerWidth / 2,
+              y: rect?.top || window.innerHeight / 2,
+            },
+            toPlayerNumber: (card.matchedBy !== null ? (card.matchedBy + 1) : roomState.currentPlayerIndex + 1) as PlayerTurn,
+          };
+        });
+
+        setFlyingCards((prev) => [...prev, ...newFlyingCards]);
+        
+        // 自動清理（備用機制，防止動畫卡住）
+        setTimeout(() => {
+          setFlyingCards((prev) => 
+            prev.filter((fc) => !newFlyingCards.some((nfc) => nfc.id === fc.id))
+          );
+        }, 2000);
+      }
+
+      prevMatchedPairsRef.current = roomState.matchedPairs;
+    }
+  }, [gameState.matchedPairs, gameState.cards, gameState.currentTurn, gameMode, roomState]);
 
   // 🧠 AI 完美記憶系統 - 記憶所有看過的卡片（包括玩家翻開的）
   useEffect(() => {
@@ -426,7 +474,7 @@ function App() {
       symbol: card.symbol || '?',
       isFlipped: card.isFlipped,
       isMatched: card.isMatched,
-      matchedBy: null, // 線上模式不追蹤配對者
+      matchedBy: card.matchedBy !== null ? (card.matchedBy + 1) as PlayerTurn : null, // 轉換索引 0/1 為 1/2
     }));
 
     // Convert players
