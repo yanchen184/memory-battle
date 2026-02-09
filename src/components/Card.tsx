@@ -7,6 +7,7 @@
 import { useRef, useEffect, memo, useCallback } from 'react';
 import gsap from 'gsap';
 import type { CardProps } from '../types';
+import { PLAYER_COLORS } from '../utils/constants';
 
 // Tilt configuration
 const TILT_CONFIG = {
@@ -233,6 +234,13 @@ function CardComponent({
   }, [disabled, card.isFlipped, card.isMatched, onClick, card.id]);
 
   const isRevealed = card.isFlipped || card.isMatched;
+  
+  // 根據配對者設定顏色
+  const playerColor = card.matchedBy === 1 
+    ? PLAYER_COLORS.PLAYER_1 
+    : card.matchedBy === 2 
+    ? PLAYER_COLORS.PLAYER_2 
+    : null;
 
   return (
     <div
@@ -369,23 +377,23 @@ function CardComponent({
             style={{
               backfaceVisibility: 'hidden',
               transform: 'rotateY(180deg)',
-              background: card.isMatched
-                ? 'linear-gradient(135deg, #0a3d2e 0%, #1a5a4a 50%, #0d4a3a 100%)'
+              background: card.isMatched && playerColor
+                ? `linear-gradient(135deg, ${playerColor}20 0%, ${playerColor}10 50%, ${playerColor}15 100%)`
                 : 'linear-gradient(135deg, #1e1e4f 0%, #2d2d6a 50%, #1a1a3f 100%)',
-              border: card.isMatched
-                ? '2px solid rgba(0, 255, 136, 0.8)'
+              border: card.isMatched && playerColor
+                ? `3px solid ${playerColor}`
                 : '2px solid rgba(0, 245, 255, 0.6)',
-              boxShadow: card.isMatched
-                ? '0 4px 30px rgba(0, 255, 136, 0.5), inset 0 0 30px rgba(0, 255, 136, 0.15)'
+              boxShadow: card.isMatched && playerColor
+                ? `0 4px 30px ${playerColor}80, inset 0 0 30px ${playerColor}30, 0 0 50px ${playerColor}40`
                 : '0 4px 20px rgba(0, 245, 255, 0.3), inset 0 0 20px rgba(0, 245, 255, 0.1)',
             }}
           >
             {/* Background shimmer effect for matched cards */}
-            {card.isMatched && (
+            {card.isMatched && playerColor && (
               <div
                 className="absolute inset-0 opacity-20"
                 style={{
-                  background: 'linear-gradient(45deg, transparent 30%, rgba(0, 255, 136, 0.3) 50%, transparent 70%)',
+                  background: `linear-gradient(45deg, transparent 30%, ${playerColor}30 50%, transparent 70%)`,
                   animation: 'shimmer 2s infinite',
                 }}
               />
@@ -396,8 +404,8 @@ function CardComponent({
               className="absolute inset-1 rounded-lg"
               style={{
                 border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: card.isMatched
-                  ? 'inset 0 0 20px rgba(0, 255, 136, 0.2)'
+                boxShadow: card.isMatched && playerColor
+                  ? `inset 0 0 20px ${playerColor}40`
                   : 'inset 0 0 15px rgba(0, 245, 255, 0.15)',
               }}
             />
@@ -407,8 +415,8 @@ function CardComponent({
               ref={symbolRef}
               className="relative z-10 text-5xl select-none"
               style={{
-                filter: card.isMatched
-                  ? 'drop-shadow(0 0 15px rgba(0, 255, 136, 0.9)) drop-shadow(0 0 30px rgba(0, 255, 136, 0.5))'
+                filter: card.isMatched && playerColor
+                  ? `drop-shadow(0 0 15px ${playerColor}) drop-shadow(0 0 30px ${playerColor}80)`
                   : 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))',
                 transform: 'translateZ(20px)',
               }}
@@ -419,19 +427,19 @@ function CardComponent({
             {/* Corner decorations */}
             <div
               className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 rounded-tl"
-              style={{ borderColor: card.isMatched ? 'rgba(0, 255, 136, 0.5)' : 'rgba(0, 245, 255, 0.5)' }}
+              style={{ borderColor: card.isMatched && playerColor ? `${playerColor}80` : 'rgba(0, 245, 255, 0.5)' }}
             />
             <div
               className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 rounded-tr"
-              style={{ borderColor: card.isMatched ? 'rgba(0, 255, 136, 0.5)' : 'rgba(0, 245, 255, 0.5)' }}
+              style={{ borderColor: card.isMatched && playerColor ? `${playerColor}80` : 'rgba(0, 245, 255, 0.5)' }}
             />
             <div
               className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 rounded-bl"
-              style={{ borderColor: card.isMatched ? 'rgba(0, 255, 136, 0.5)' : 'rgba(0, 245, 255, 0.5)' }}
+              style={{ borderColor: card.isMatched && playerColor ? `${playerColor}80` : 'rgba(0, 245, 255, 0.5)' }}
             />
             <div
               className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 rounded-br"
-              style={{ borderColor: card.isMatched ? 'rgba(0, 255, 136, 0.5)' : 'rgba(0, 245, 255, 0.5)' }}
+              style={{ borderColor: card.isMatched && playerColor ? `${playerColor}80` : 'rgba(0, 245, 255, 0.5)' }}
             />
           </div>
         </div>

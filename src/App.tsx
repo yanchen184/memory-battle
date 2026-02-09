@@ -163,6 +163,26 @@ function App() {
     prevMatchedPairsRef.current = gameState.matchedPairs;
   }, [gameState.matchedPairs, gameState.cards, gameState.currentTurn, gameMode]);
 
+  // 🧠 AI 完美記憶系統 - 記憶所有看過的卡片（包括玩家翻開的）
+  useEffect(() => {
+    if (!isAIMode || !aiRef.current) return;
+    if (gameState.phase !== 'PLAYING') return;
+
+    // 記憶所有曾經翻開過的卡片（不論誰翻的）
+    gameState.cards.forEach(card => {
+      if ((card.isFlipped || card.isMatched) && aiRef.current) {
+        aiRef.current.rememberCard(card.id, card.symbol, card.pairId);
+      }
+    });
+
+    // 記憶已配對的卡片
+    gameState.cards.forEach(card => {
+      if (card.isMatched && aiRef.current) {
+        aiRef.current.rememberMatch(card.pairId);
+      }
+    });
+  }, [isAIMode, gameState.cards, gameState.phase]);
+
   // AI 自動翻牌邏輯
   useEffect(() => {
     if (!isAIMode || !aiRef.current) return;
@@ -170,20 +190,6 @@ function App() {
     if (gameState.currentTurn !== 2) return; // 只在 AI 回合執行
     if (isProcessing) return;
     if (gameState.flippedCards.length >= 2) return; // 已經翻了兩張
-
-    // AI 記憶所有卡片
-    gameState.cards.forEach(card => {
-      if (card.isFlipped && !card.isMatched && aiRef.current) {
-        aiRef.current.rememberCard(card.id, card.symbol, card.pairId);
-      }
-    });
-
-    // AI 記憶已配對的卡片
-    gameState.cards.forEach(card => {
-      if (card.isMatched && aiRef.current) {
-        aiRef.current.rememberMatch(card.pairId);
-      }
-    });
 
     // 延遲 AI 翻牌（模擬思考）
     const aiMoveTimer = setTimeout(async () => {
