@@ -1,73 +1,202 @@
-# React + TypeScript + Vite
+# 🎮 Memory Battle - 記憶翻牌對戰遊戲
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**線上遊玩：** https://yanchen184.github.io/memory-battle/
 
-Currently, two official plugins are available:
+雙人線上記憶翻牌對戰遊戲，支援本地對戰、AI 對手、線上連線三種模式。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![Memory Battle](https://img.shields.io/badge/React-19.2-61DAFB?logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-7.2-646CFF?logo=vite)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ 特色功能
 
-## Expanding the ESLint configuration
+### 🎯 三種遊戲模式
+- **🏠 Local 2P Battle** - 本地雙人對戰（同一台電腦）
+- **🤖 VS AI (Perfect Memory)** - 單人對戰 AI 對手（完美記憶）
+- **🌐 Online Battle** - 線上多人對戰（透過 WebSocket）
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🎨 專業視覺設計
+- **霓虹風格 UI** - 賽博龐克風格的介面設計
+- **流暢動畫** - GSAP 驅動的卡片翻轉和配對特效
+- **響應式設計** - 支援各種螢幕尺寸
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 🎲 多種遊戲難度
+- **4x4** (16 張卡片) - 簡單模式
+- **4x6** (24 張卡片) - 中等難度
+- **6x6** (36 張卡片) - 困難模式
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 🏆 完整遊戲機制
+- **計時器** - 追蹤遊戲時間
+- **計分系統** - 記錄成功配對次數
+- **卡片收藏顯示** - 視覺化玩家收藏的卡片
+- **勝利畫面** - 顯示遊戲結果和統計
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+## 🚀 快速開始
+
+### 線上遊玩
+直接訪問：https://yanchen184.github.io/memory-battle/
+
+### 本地開發
+
+```bash
+# 克隆專案
+git clone https://github.com/yanchen184/memory-battle.git
+cd memory-battle
+
+# 安裝依賴
+npm install
+
+# 啟動開發伺服器
+npm run dev
+
+# 開啟瀏覽器訪問
+# http://localhost:5173
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 建構生產版本
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
+npm run preview
 ```
+
+---
+
+## 🎮 遊戲玩法
+
+### 基本規則
+1. 選擇遊戲模式和難度
+2. 輪流翻開兩張卡片
+3. 如果卡片圖案相同，配對成功並獲得分數
+4. 配對所有卡片後，分數較高的玩家獲勝
+
+### 線上對戰
+1. 點擊「Online Battle」
+2. 建立房間或加入現有房間
+3. 等待對手加入
+4. 開始遊戲！
+
+**後端伺服器：** https://love-letter-server-production.up.railway.app
+
+---
+
+## 🛠️ 技術棧
+
+### 前端
+- **React 19.2** - UI 框架
+- **TypeScript** - 類型安全
+- **Vite** - 建構工具
+- **Tailwind CSS** - 樣式框架
+- **GSAP** - 動畫引擎
+
+### 後端（Game Hub Server）
+- **Node.js** - 運行環境
+- **WebSocket (ws)** - 即時通訊
+- **Railway** - 雲端部署
+
+### 開發工具
+- **ESLint** - 程式碼檢查
+- **PostCSS** - CSS 處理
+- **GitHub Actions** - CI/CD
+
+---
+
+## 📁 專案結構
+
+```
+memory-battle/
+├── src/
+│   ├── components/       # React 元件
+│   │   ├── Card.tsx             # 卡片元件
+│   │   ├── GameBoard.tsx        # 遊戲板
+│   │   ├── PlayerInfo.tsx       # 玩家資訊
+│   │   ├── CollectedCards.tsx   # 收藏卡片顯示
+│   │   ├── Timer.tsx            # 計時器
+│   │   ├── ScoreBoard.tsx       # 計分板
+│   │   ├── VictoryScreen.tsx    # 勝利畫面
+│   │   └── Lobby.tsx            # 線上大廳
+│   ├── hooks/            # 自訂 Hooks
+│   │   ├── useGameState.ts      # 遊戲狀態管理
+│   │   ├── useWebSocket.ts      # WebSocket 連線
+│   │   └── useAudioManager.ts   # 音效管理
+│   ├── utils/            # 工具函數
+│   │   ├── ai.ts                # AI 對手邏輯
+│   │   ├── constants.ts         # 常數定義
+│   │   └── helpers.ts           # 輔助函數
+│   ├── types/            # TypeScript 類型
+│   ├── App.tsx           # 主應用程式
+│   └── main.tsx          # 入口點
+├── public/               # 靜態資源
+├── .github/
+│   └── workflows/
+│       └── deploy.yml    # GitHub Actions 部署
+└── vite.config.ts        # Vite 配置
+```
+
+---
+
+## 🤖 AI 對手
+
+AI 對手採用**完美記憶系統**：
+- 記錄所有已翻開的卡片位置
+- 優先配對已知的卡片
+- 模擬人類思考時間（1 秒延遲）
+
+---
+
+## 🌐 線上對戰架構
+
+```
+前端 (GitHub Pages)
+    ↓ WebSocket
+Game Hub Server (Railway)
+    ↓ wss://
+/ws/memory-battle/{roomId}
+```
+
+### 支援的訊息類型
+- `JOIN_ROOM` - 加入房間
+- `START_GAME` - 開始遊戲
+- `FLIP_CARD` - 翻牌
+- `REMATCH` - 再來一局
+- `LEAVE_ROOM` - 離開房間
+
+---
+
+## 📊 開發進度
+
+- [x] 基本遊戲機制
+- [x] 本地雙人對戰
+- [x] AI 對手模式
+- [x] 線上多人對戰
+- [x] 卡片收藏視覺化
+- [x] 霓虹風格 UI
+- [x] 響應式設計
+- [x] GitHub Pages 部署
+- [ ] 音效系統
+- [ ] 排行榜
+- [ ] 更多 AI 難度選項
+
+---
+
+## 📝 授權
+
+MIT License © 2026 yanchen184
+
+---
+
+## 🔗 相關連結
+
+- **線上遊玩：** https://yanchen184.github.io/memory-battle/
+- **GitHub：** https://github.com/yanchen184/memory-battle
+- **後端伺服器：** https://love-letter-server-production.up.railway.app
+- **作品集：** https://yanchen184.github.io/game-portal
+
+---
+
+**🎮 立即開始遊玩！祝你好運！**
