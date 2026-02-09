@@ -503,8 +503,16 @@ function AppContent() {
       roomStateCards: roomState.cards.length,
       onlineCards: onlineCards.length,
       firstCard: onlineCards[0],
+      firstThreeCards: onlineCards.slice(0, 3),
       roomStatus: roomState.status,
+      gridSize: roomState.gridSize,
+      gridCols,
     });
+    
+    // 🚨 Alert if no cards
+    if (onlineCards.length === 0) {
+      console.error('[CRITICAL] No cards in online mode! Room state:', roomState);
+    }
 
     // Convert players
     const player1: Player = {
