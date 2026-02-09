@@ -237,6 +237,7 @@ function CardComponent({
   return (
     <div
       ref={containerRef}
+      data-card-id={card.id}
       className="card-container relative"
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}

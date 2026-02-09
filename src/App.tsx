@@ -12,11 +12,19 @@ import {
   Timer,
   VictoryScreen,
   ConnectionStatus,
+  FlyingCardEffect,
 } from './components';
 import { useGameState, useWebSocket } from './hooks';
-import type { GridSize, VictoryData, Player, CardData } from './types';
+import type { GridSize, VictoryData, Player, CardData, PlayerTurn } from './types';
 import { GAME_CONFIG } from './utils/constants';
 import { AIOpponent } from './utils/ai';
+
+interface FlyingCardData {
+  id: string;
+  symbol: string;
+  fromPosition: { x: number; y: number };
+  toPlayerNumber: PlayerTurn;
+}
 
 // Log version on startup
 console.log('%c Memory Battle v2.0.0 - Online Edition ', 'background: #00f5ff; color: #000; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
@@ -27,6 +35,8 @@ function App() {
   const [gameMode, setGameMode] = useState<GameMode>('select');
   const [isAIMode, setIsAIMode] = useState(false);
   const aiRef = useRef<AIOpponent | null>(null);
+  const [flyingCards, setFlyingCards] = useState<FlyingCardData[]>([]);
+  const prevMatchedPairsRef = useRef<number>(0);
 
   // Local game state
   const { gameState, startGame, flipCard, resetGame, isProcessing } = useGameState();
@@ -115,6 +125,43 @@ function App() {
       aiRef.current = null;
     }
   }, [gameMode, leaveRoom, resetGame]);
+
+  // 監聽配對成功，觸發飛行動畫
+  useEffect(() => {
+    if (gameMode !== 'local' && gameMode !== 'ai') return;
+    if (gameState.matchedPairs <= prevMatchedPairsRef.current) return;
+
+    // 找到剛配對成功的卡片
+    const justMatchedCards = gameState.cards.filter(
+      (card) => card.isMatched && card.matchedBy === gameState.currentTurn
+    );
+
+    if (justMatchedCards.length >= 2) {
+      // 獲取最後配對的兩張卡片
+      const lastTwo = justMatchedCards.slice(-2);
+      
+      // 為每張卡片創建飛行動畫
+      const newFlyingCards = lastTwo.map((card) => {
+        // 獲取卡片在螢幕上的位置
+        const cardElement = document.querySelector(`[data-card-id="${card.id}"]`);
+        const rect = cardElement?.getBoundingClientRect();
+        
+        return {
+          id: `flying-${card.id}-${Date.now()}`,
+          symbol: card.symbol,
+          fromPosition: {
+            x: rect?.left || window.innerWidth / 2,
+            y: rect?.top || window.innerHeight / 2,
+          },
+          toPlayerNumber: card.matchedBy as PlayerTurn,
+        };
+      });
+
+      setFlyingCards((prev) => [...prev, ...newFlyingCards]);
+    }
+
+    prevMatchedPairsRef.current = gameState.matchedPairs;
+  }, [gameState.matchedPairs, gameState.cards, gameState.currentTurn, gameMode]);
 
   // AI 自動翻牌邏輯
   useEffect(() => {
@@ -303,6 +350,19 @@ function App() {
             onExit={handleExit}
           />
         )}
+
+        {/* Flying Card Animations */}
+        {flyingCards.map((flyingCard) => (
+          <FlyingCardEffect
+            key={flyingCard.id}
+            cardSymbol={flyingCard.symbol}
+            fromPosition={flyingCard.fromPosition}
+            toPlayerNumber={flyingCard.toPlayerNumber}
+            onComplete={() => {
+              setFlyingCards((prev) => prev.filter((c) => c.id !== flyingCard.id));
+            }}
+          />
+        ))}
       </div>
     );
   }
