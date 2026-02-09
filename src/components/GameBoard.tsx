@@ -47,6 +47,21 @@ function GameBoardComponent({
     });
   }, [cards.length]);
 
+  // 🐛 Debug: Empty cards
+  if (cards.length === 0) {
+    console.warn('[GameBoard] No cards to display!', { cards });
+    return (
+      <div className="game-board glass-panel p-4 md:p-6 lg:p-8 flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <p className="text-[var(--text-muted)] mb-2">⚠️ 等待遊戲數據...</p>
+          <p className="text-xs text-[var(--text-muted)]">
+            如果持續顯示此訊息，請重新整理頁面
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       ref={boardRef}

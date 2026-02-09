@@ -498,6 +498,14 @@ function AppContent() {
       matchedBy: (card as any).matchedBy !== null ? ((card as any).matchedBy + 1) as PlayerTurn : null, // 轉換索引 0/1 為 1/2
     }));
 
+    // 🐛 Debug: Log cards data
+    console.log('[Online Mode Debug]', {
+      roomStateCards: roomState.cards.length,
+      onlineCards: onlineCards.length,
+      firstCard: onlineCards[0],
+      roomStatus: roomState.status,
+    });
+
     // Convert players
     const player1: Player = {
       id: onlinePlayers[0]?.id || '1',
