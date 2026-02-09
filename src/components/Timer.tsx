@@ -6,6 +6,7 @@
 import { useRef, useEffect, memo } from 'react';
 import gsap from 'gsap';
 import type { TimerProps } from '../types';
+import { soundManager } from '../utils/sound';
 
 /**
  * Pixel-style timer with progress bar
@@ -17,11 +18,16 @@ function TimerComponent({ timeLeft, maxTime, isWarning }: TimerProps) {
 
   const progress = timeLeft / maxTime;
 
-  // Warning flash animation
+  // Warning flash animation + sound
   useEffect(() => {
     if (!containerRef.current) return;
 
     if (isWarning) {
+      // Play warning sound on every second when low time
+      if (timeLeft <= 10) {
+        soundManager.playTimerWarning();
+      }
+
       gsap.to(containerRef.current, {
         opacity: 0.7,
         duration: 0.2,
@@ -40,7 +46,7 @@ function TimerComponent({ timeLeft, maxTime, isWarning }: TimerProps) {
     return () => {
       gsap.killTweensOf(containerRef.current);
     };
-  }, [isWarning]);
+  }, [isWarning, timeLeft]);
 
   // Get color based on time
   const getColor = () => {

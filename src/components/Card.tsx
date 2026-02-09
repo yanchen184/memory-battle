@@ -7,6 +7,7 @@ import { useRef, useEffect, memo, useCallback } from 'react';
 import gsap from 'gsap';
 import type { CardProps } from '../types';
 import { PLAYER_COLORS } from '../utils/constants';
+import { soundManager } from '../utils/sound';
 
 /**
  * Simplified pixel-style card with flip animation
@@ -28,6 +29,11 @@ function CardComponent({
 
     const rotation = card.isFlipped || card.isMatched ? 180 : 0;
 
+    // Play flip sound when flipping
+    if (card.isFlipped && !card.isMatched) {
+      soundManager.playFlip();
+    }
+
     gsap.to(innerRef.current, {
       rotateY: rotation,
       duration: 0.4,
@@ -38,6 +44,9 @@ function CardComponent({
   // Handle match success effect
   useEffect(() => {
     if (!showMatchEffect || !cardRef.current) return;
+
+    // Play match sound
+    soundManager.playMatch();
 
     const tl = gsap.timeline();
 
@@ -71,6 +80,9 @@ function CardComponent({
   // Handle match fail effect
   useEffect(() => {
     if (!showFailEffect || !cardRef.current) return;
+
+    // Play mismatch sound
+    soundManager.playMismatch();
 
     const tl = gsap.timeline();
 

@@ -8,6 +8,7 @@ import gsap from 'gsap';
 import { VictoryScreenProps } from '../types';
 import { NEON_COLORS } from '../utils/constants';
 import { randomInRange, randomColor } from '../utils/helpers';
+import { soundManager } from '../utils/sound';
 
 /**
  * VictoryScreen component
@@ -75,6 +76,9 @@ function VictoryScreenComponent({
   // Entrance animation
   useEffect(() => {
     if (!containerRef.current || !titleRef.current || !winnerRef.current) return;
+
+    // Play victory sound
+    soundManager.playVictory();
 
     const tl = gsap.timeline();
 
