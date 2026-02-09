@@ -344,6 +344,7 @@ function App() {
       symbol: card.symbol || '?',
       isFlipped: card.isFlipped,
       isMatched: card.isMatched,
+      matchedBy: null, // 線上模式不追蹤配對者
     }));
 
     // Convert players
