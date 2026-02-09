@@ -9,6 +9,7 @@ import { VictoryScreenProps } from '../types';
 import { NEON_COLORS } from '../utils/constants';
 import { randomInRange, randomColor } from '../utils/helpers';
 import { soundManager } from '../utils/sound';
+import { gameHistory } from '../utils/gameHistory';
 
 /**
  * VictoryScreen component
@@ -72,6 +73,28 @@ function VictoryScreenComponent({
       });
     });
   }, []);
+
+  // Save game to history (only once)
+  useEffect(() => {
+    // Save game record
+    if (victoryData.gameMode && victoryData.gridSize && victoryData.duration) {
+      gameHistory.saveGame({
+        mode: victoryData.gameMode,
+        gridSize: victoryData.gridSize,
+        player1: {
+          name: victoryData.winner.name,
+          score: victoryData.finalScores[0],
+        },
+        player2: {
+          name: victoryData.loser.name,
+          score: victoryData.finalScores[1],
+        },
+        winner: victoryData.isDraw ? 'draw' : 'player1',
+        duration: victoryData.duration,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once
 
   // Entrance animation
   useEffect(() => {

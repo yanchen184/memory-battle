@@ -125,6 +125,9 @@ export interface VictoryData {
   loser: Player;
   finalScores: [number, number];
   isDraw: boolean;
+  gameMode?: 'local' | 'ai' | 'online';
+  gridSize?: GridSize;
+  duration?: number; // seconds
 }
 
 // ============================================
