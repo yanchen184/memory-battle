@@ -5,6 +5,7 @@
 
 export { Card } from './Card';
 export { GameBoard } from './GameBoard';
+export { GameHistory } from './GameHistory';
 export { PlayerInfo } from './PlayerInfo';
 export { ScoreBoard } from './ScoreBoard';
 export { Timer } from './Timer';

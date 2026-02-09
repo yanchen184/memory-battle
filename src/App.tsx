@@ -7,6 +7,7 @@ import { useCallback, useState, useEffect, useRef } from 'react';
 import {
   Lobby,
   GameBoard,
+  GameHistory,
   PlayerInfo,
   ScoreBoard,
   Timer,
@@ -16,6 +17,7 @@ import {
 } from './components';
 import { useGameState, useWebSocket } from './hooks';
 import type { GridSize, VictoryData, Player, CardData, PlayerTurn } from './types';
+import type { HistoryEntry } from './components/GameHistory';
 import { GAME_CONFIG } from './utils/constants';
 import { AIOpponent } from './utils/ai';
 
@@ -51,6 +53,10 @@ function AppContent() {
   const aiRef = useRef<AIOpponent | null>(null);
   const [flyingCards, setFlyingCards] = useState<FlyingCardData[]>([]);
   const prevMatchedPairsRef = useRef<number>(0);
+  
+  // 🆕 遊戲歷史記錄
+  const [gameHistory, setGameHistory] = useState<HistoryEntry[]>([]);
+  const turnCounterRef = useRef<number>(0);
 
   // Local game state
   const { gameState, startGame, flipCard, resetGame, isProcessing } = useGameState();
@@ -280,6 +286,55 @@ function AppContent() {
 
     return () => clearTimeout(aiMoveTimer);
   }, [isAIMode, gameState, isProcessing, flipCard]);
+
+  // 🆕 線上模式歷史記錄 - 初始化
+  useEffect(() => {
+    if (gameMode !== 'online' || !roomState) return;
+    
+    // 當遊戲開始時，清空歷史並重置回合計數器
+    if (roomState.status === 'playing' && roomState.matchedPairs === 0 && gameHistory.length > 0) {
+      setGameHistory([]);
+      turnCounterRef.current = 0;
+    }
+  }, [gameMode, roomState, gameHistory.length]);
+
+  // 🆕 線上模式歷史記錄 - 記錄配對事件
+  useEffect(() => {
+    if (gameMode !== 'online' || !roomState) return;
+    if (roomState.status !== 'playing') return;
+    
+    // 檢測配對變化
+    const prevMatched = prevMatchedPairsRef.current;
+    const currentMatched = roomState.matchedPairs;
+    
+    if (currentMatched > prevMatched) {
+      // 有新的配對！找到配對的玩家
+      const players = roomState.players;
+      const matchingPlayer = players.find(p => p.score === currentMatched);
+      
+      if (matchingPlayer) {
+        // 找到配對的卡片（最近配對的）
+        const matchedCards = roomState.cards.filter(c => c.isMatched);
+        const recentlyMatched = matchedCards.slice(-2); // 最後兩張
+        
+        turnCounterRef.current++;
+        
+        const entry: HistoryEntry = {
+          id: `match-${Date.now()}`,
+          turnNumber: turnCounterRef.current,
+          playerName: matchingPlayer.name,
+          playerNumber: players.indexOf(matchingPlayer) === 0 ? 1 : 2,
+          action: 'match',
+          cards: recentlyMatched.map(c => c.symbol || '?'),
+          timestamp: Date.now(),
+        };
+        
+        setGameHistory(prev => [...prev, entry]);
+      }
+      
+      prevMatchedPairsRef.current = currentMatched;
+    }
+  }, [gameMode, roomState, gameHistory]);
 
   // Mode selection screen
   if (gameMode === 'select') {
@@ -587,12 +642,44 @@ function AppContent() {
             />
           </div>
           
-          <GameBoard
-            cards={onlineCards}
-            onCardClick={handleCardClick}
-            disabled={!isMyTurn || roomState.status === 'finished'}
-            gridCols={gridCols}
-          />
+          {/* 🆕 遊戲板 + 歷史記錄並排 */}
+          <div className="flex gap-4 items-start justify-center w-full max-w-6xl">
+            {/* 遊戲板 */}
+            <div className="flex-shrink-0">
+              <GameBoard
+                cards={onlineCards}
+                onCardClick={handleCardClick}
+                disabled={!isMyTurn || roomState.status === 'finished'}
+                gridCols={gridCols}
+              />
+            </div>
+
+            {/* 歷史記錄 */}
+            <div 
+              className="flex-shrink-0"
+              style={{
+                width: '300px',
+                background: 'var(--bg-card)',
+                border: '3px solid var(--border-color)',
+                boxShadow: 'var(--shadow-pixel)',
+              }}
+            >
+              <div 
+                className="px-4 py-2"
+                style={{
+                  borderBottom: '3px solid var(--border-color)',
+                  background: 'rgba(255, 255, 255, 0.05)',
+                }}
+              >
+                <h3 className="text-sm font-bold" style={{ color: '#4dd4ff' }}>
+                  📜 遊戲記錄
+                </h3>
+              </div>
+              <div className="p-4">
+                <GameHistory history={gameHistory} isCompact={true} />
+              </div>
+            </div>
+          </div>
 
           <div className="mt-4">
             <ScoreBoard
