@@ -29,10 +29,24 @@ interface FlyingCardData {
 // Log version on startup
 console.log('%c Memory Battle v2.0.0 - Online Edition ', 'background: #00f5ff; color: #000; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
 
+import { HashRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+
 type GameMode = 'select' | 'local' | 'ai' | 'online';
 
-function App() {
-  const [gameMode, setGameMode] = useState<GameMode>('select');
+function AppContent() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // 根據路徑決定遊戲模式
+  const getGameModeFromPath = (): GameMode => {
+    const path = location.pathname;
+    if (path === '/local') return 'local';
+    if (path === '/ai') return 'ai';
+    if (path === '/online') return 'online';
+    return 'select';
+  };
+  
+  const [gameMode, setGameMode] = useState<GameMode>(getGameModeFromPath());
   const [isAIMode, setIsAIMode] = useState(false);
   const aiRef = useRef<AIOpponent | null>(null);
   const [flyingCards, setFlyingCards] = useState<FlyingCardData[]>([]);
@@ -124,7 +138,8 @@ function App() {
       aiRef.current.clearMemory();
       aiRef.current = null;
     }
-  }, [gameMode, leaveRoom, resetGame]);
+    navigate('/');
+  }, [gameMode, leaveRoom, resetGame, navigate]);
 
   // 監聽配對成功，觸發飛行動畫（支援三個模式）
   useEffect(() => {
@@ -282,7 +297,10 @@ function App() {
 
         <div className="flex flex-col gap-4 w-full max-w-md">
           <button
-            onClick={() => setGameMode('local')}
+            onClick={() => {
+              setGameMode('local');
+              navigate('/local');
+            }}
             className="w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
             style={{
               background: 'linear-gradient(135deg, #00f5ff 0%, #9d00ff 100%)',
@@ -295,7 +313,10 @@ function App() {
           </button>
 
           <button
-            onClick={() => setGameMode('ai')}
+            onClick={() => {
+              setGameMode('ai');
+              navigate('/ai');
+            }}
             className="w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
             style={{
               background: 'linear-gradient(135deg, #00ff88 0%, #00f5ff 100%)',
@@ -308,7 +329,10 @@ function App() {
           </button>
 
           <button
-            onClick={() => setGameMode('online')}
+            onClick={() => {
+              setGameMode('online');
+              navigate('/online');
+            }}
             className="w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
             style={{
               background: 'linear-gradient(135deg, #ff00ff 0%, #ff6600 100%)',
@@ -328,7 +352,7 @@ function App() {
         </div>
 
         <p className="mt-8 text-xs text-[var(--text-muted)]">
-          記憶翻牌對戰 v2.0.0 - 線上版
+          記憶翻牌對戰 v3.0.0 - 像素冒險版
         </p>
       </div>
     );
@@ -988,6 +1012,17 @@ function WaitingRoom({ roomState, onLeave }: WaitingRoomProps) {
         </button>
       </div>
     </div>
+  );
+}
+
+}
+
+// 包裝在 HashRouter 中
+function App() {
+  return (
+    <HashRouter>
+      <AppContent />
+    </HashRouter>
   );
 }
 
