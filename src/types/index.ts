@@ -210,6 +210,7 @@ export interface VictoryScreenProps {
 export interface LobbyProps {
   onStartGame: (playerName: string) => void;
   connectionStatus: ConnectionStatus;
+  isAIMode?: boolean; // 是否為 AI 模式
 }
 
 // ============================================

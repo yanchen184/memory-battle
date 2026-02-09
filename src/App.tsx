@@ -282,6 +282,7 @@ function App() {
         <Lobby
           onStartGame={handleStartGame}
           connectionStatus="CONNECTED"
+          isAIMode={gameMode === 'ai'}
         />
       );
     }

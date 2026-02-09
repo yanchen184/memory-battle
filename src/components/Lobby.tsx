@@ -10,13 +10,14 @@ import { NEON_COLORS, DEFAULT_PLAYER, GRID_CONFIGS } from '../utils/constants';
 
 interface ExtendedLobbyProps extends Omit<LobbyProps, 'onStartGame'> {
   onStartGame: (player1Name: string, player2Name: string, gridSize: GridSize) => void;
+  isAIMode?: boolean; // 是否為 AI 模式
 }
 
 /**
  * Lobby component
  * Handles player name input and game configuration
  */
-function LobbyComponent({ onStartGame }: ExtendedLobbyProps) {
+function LobbyComponent({ onStartGame, isAIMode = false }: ExtendedLobbyProps) {
   const [player1Name, setPlayer1Name] = useState('');
   const [player2Name, setPlayer2Name] = useState('');
   const [gridSize, setGridSize] = useState<GridSize>('4x4');
@@ -78,11 +79,20 @@ function LobbyComponent({ onStartGame }: ExtendedLobbyProps) {
       });
     }
 
-    onStartGame(
-      player1Name || DEFAULT_PLAYER.NAMES[0],
-      player2Name || DEFAULT_PLAYER.NAMES[1],
-      gridSize
-    );
+    // AI 模式：玩家 2 固定為 "AI 🤖"
+    if (isAIMode) {
+      onStartGame(
+        player1Name || '玩家',
+        'AI 🤖',
+        gridSize
+      );
+    } else {
+      onStartGame(
+        player1Name || DEFAULT_PLAYER.NAMES[0],
+        player2Name || DEFAULT_PLAYER.NAMES[1],
+        gridSize
+      );
+    }
   };
 
   const gridOptions: { size: GridSize; label: string; pairs: number }[] = [
@@ -100,13 +110,16 @@ function LobbyComponent({ onStartGame }: ExtendedLobbyProps) {
       <h1
         ref={titleRef}
         className="text-4xl md:text-6xl font-bold text-center mb-4"
-        style={{ color: NEON_COLORS.CYAN }}
+        style={{ color: isAIMode ? NEON_COLORS.GREEN : NEON_COLORS.CYAN }}
       >
-        記憶翻牌對戰
+        {isAIMode ? '🤖 挑戰完美 AI' : '記憶翻牌對戰'}
       </h1>
 
       <p className="text-[var(--text-secondary)] text-center mb-8 max-w-md">
-        挑戰你的記憶力！配對相同的卡片來獲得分數，成為最強記憶大師！
+        {isAIMode 
+          ? 'AI 擁有完美記憶！看你能不能擊敗它！' 
+          : '挑戰你的記憶力！配對相同的卡片來獲得分數，成為最強記憶大師！'
+        }
       </p>
 
       {/* Form */}
@@ -122,7 +135,7 @@ function LobbyComponent({ onStartGame }: ExtendedLobbyProps) {
             className="block text-sm font-medium mb-2"
             style={{ color: NEON_COLORS.CYAN }}
           >
-            玩家 1
+            {isAIMode ? '你的名字' : '玩家 1'}
           </label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xl">
@@ -143,33 +156,55 @@ function LobbyComponent({ onStartGame }: ExtendedLobbyProps) {
           </div>
         </div>
 
-        {/* Player 2 Input */}
-        <div className="mb-6">
-          <label
-            htmlFor="player2"
-            className="block text-sm font-medium mb-2"
-            style={{ color: NEON_COLORS.PINK }}
-          >
-            玩家 2
-          </label>
-          <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xl">
-              {DEFAULT_PLAYER.AVATARS[1]}
-            </span>
-            <input
-              type="text"
-              id="player2"
-              value={player2Name}
-              onChange={(e) => setPlayer2Name(e.target.value)}
-              placeholder="輸入名字..."
-              maxLength={12}
-              className="w-full pl-12 pr-4 py-3 rounded-xl bg-[var(--bg-secondary)] border-2 border-transparent focus:border-[var(--neon-pink)] outline-none transition-colors"
-              style={{
-                color: 'var(--text-primary)',
-              }}
-            />
+        {/* Player 2 Input - 只在非 AI 模式顯示 */}
+        {!isAIMode && (
+          <div className="mb-6">
+            <label
+              htmlFor="player2"
+              className="block text-sm font-medium mb-2"
+              style={{ color: NEON_COLORS.PINK }}
+            >
+              玩家 2
+            </label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xl">
+                {DEFAULT_PLAYER.AVATARS[1]}
+              </span>
+              <input
+                type="text"
+                id="player2"
+                value={player2Name}
+                onChange={(e) => setPlayer2Name(e.target.value)}
+                placeholder="輸入名字..."
+                maxLength={12}
+                className="w-full pl-12 pr-4 py-3 rounded-xl bg-[var(--bg-secondary)] border-2 border-transparent focus:border-[var(--neon-pink)] outline-none transition-colors"
+                style={{
+                  color: 'var(--text-primary)',
+                }}
+              />
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* AI 對手提示 - 只在 AI 模式顯示 */}
+        {isAIMode && (
+          <div className="mb-6 p-4 rounded-xl" style={{
+            background: 'rgba(0, 255, 136, 0.1)',
+            border: '2px solid rgba(0, 255, 136, 0.3)',
+          }}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium" style={{ color: NEON_COLORS.GREEN }}>
+                  你的對手
+                </p>
+                <p className="text-xs text-[var(--text-muted)] mt-1">
+                  完美記憶 AI 系統
+                </p>
+              </div>
+              <div className="text-4xl">🤖</div>
+            </div>
+          </div>
+        )}
 
         {/* Grid Size Selection */}
         <div className="mb-8">
