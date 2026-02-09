@@ -95,20 +95,19 @@ function PlayerInfoComponent({
   return (
     <div
       ref={containerRef}
-      className={`player-info relative flex flex-col gap-2 p-4 rounded-xl transition-all duration-300`}
+      className="player-info relative flex flex-col gap-2 p-4"
       style={{
-        background: isCurrentTurn
-          ? `linear-gradient(135deg, ${playerColor}15 0%, transparent 100%)`
-          : 'rgba(26, 26, 46, 0.5)',
-        border: `2px solid ${isCurrentTurn ? playerColor : 'rgba(255, 255, 255, 0.1)'}`,
+        background: isCurrentTurn ? playerColor : 'var(--bg-card)',
+        border: '3px solid var(--border-color)',
+        boxShadow: isCurrentTurn ? 'var(--shadow-pixel-hover)' : 'var(--shadow-pixel)',
       }}
     >
       {/* Glow indicator */}
       <div
         ref={glowRef}
-        className="absolute inset-0 rounded-xl opacity-0 pointer-events-none"
+        className="absolute inset-0 opacity-0 pointer-events-none"
         style={{
-          border: `2px solid ${playerColor}`,
+          border: '3px solid var(--border-color)',
         }}
       />
 
@@ -116,11 +115,11 @@ function PlayerInfoComponent({
       <div className={`flex items-center gap-4 ${isPlayer1 ? 'flex-row' : 'flex-row-reverse'}`}>
         {/* Avatar */}
         <div
-          className="avatar relative w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center text-3xl flex-shrink-0"
+          className="avatar relative w-14 h-14 md:w-16 md:h-16 flex items-center justify-center text-3xl flex-shrink-0"
           style={{
-            background: `linear-gradient(135deg, ${playerColor}30 0%, ${playerColor}10 100%)`,
-            border: `2px solid ${playerColor}`,
-            boxShadow: isCurrentTurn ? `0 0 20px ${playerColor}50` : 'none',
+            background: 'var(--bg-card)',
+            border: '3px solid var(--border-color)',
+            boxShadow: 'inset 2px 2px 0px rgba(0,0,0,0.1)',
           }}
         >
           {player.avatar}
@@ -128,10 +127,10 @@ function PlayerInfoComponent({
           {/* Online indicator */}
           {player.isConnected && (
             <div
-              className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-[var(--bg-primary)]"
+              className="absolute -bottom-1 -right-1 w-4 h-4 border-2"
               style={{
-                backgroundColor: '#00ff88',
-                boxShadow: '0 0 10px #00ff88',
+                backgroundColor: '#6bcf7f',
+                borderColor: 'var(--border-color)',
               }}
             />
           )}
@@ -141,9 +140,9 @@ function PlayerInfoComponent({
         <div className={`flex flex-col flex-1 ${isPlayer1 ? 'items-start' : 'items-end'}`}>
           {/* Name */}
           <span
-            className="text-sm md:text-base font-medium"
+            className="text-xs md:text-sm font-bold uppercase"
             style={{
-              color: isCurrentTurn ? playerColor : 'var(--text-secondary)',
+              color: isCurrentTurn ? 'var(--text-primary)' : 'var(--text-secondary)',
             }}
           >
             {player.name}
@@ -151,13 +150,10 @@ function PlayerInfoComponent({
 
           {/* Score */}
           <div className="flex items-center gap-2">
-            <span className="text-xs text-[var(--text-muted)]">SCORE</span>
+            <span className="text-xs opacity-70">分數</span>
             <span
               ref={scoreRef}
-              className="text-2xl md:text-3xl font-bold"
-              style={{
-                textShadow: isCurrentTurn ? `0 0 20px ${playerColor}` : 'none',
-              }}
+              className="text-xl md:text-2xl font-bold"
             >
               {player.score}
             </span>
@@ -171,10 +167,13 @@ function PlayerInfoComponent({
       {/* Turn indicator text */}
       {isCurrentTurn && (
         <div
-          className={`absolute -bottom-6 ${isPlayer1 ? 'left-4' : 'right-4'} text-xs font-semibold animate-pulse`}
-          style={{ color: playerColor }}
+          className={`absolute -bottom-6 ${isPlayer1 ? 'left-4' : 'right-4'} text-xs font-bold uppercase`}
+          style={{ 
+            color: 'var(--text-primary)',
+            animation: 'pixel-flash 1s steps(2) infinite',
+          }}
         >
-          YOUR TURN
+          ▶ 你的回合
         </div>
       )}
     </div>

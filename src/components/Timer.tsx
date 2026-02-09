@@ -1,6 +1,6 @@
 /**
- * Timer Component - Turn timer with visual feedback
- * @version 1.0.0
+ * Timer Component - Pixel Style Turn Timer
+ * @version 2.0.0 - Pixel Cute Adventure Edition
  */
 
 import { useRef, useEffect, memo } from 'react';
@@ -8,36 +8,32 @@ import gsap from 'gsap';
 import type { TimerProps } from '../types';
 
 /**
- * Timer component
- * Displays remaining time with progress ring and warning state
+ * Pixel-style timer with progress bar
  */
 function TimerComponent({ timeLeft, maxTime, isWarning }: TimerProps) {
-  const ringRef = useRef<SVGCircleElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
 
-  const radius = 40;
-  const circumference = 2 * Math.PI * radius;
   const progress = timeLeft / maxTime;
-  const strokeDashoffset = circumference * (1 - progress);
 
-  // Warning pulse animation
+  // Warning flash animation
   useEffect(() => {
     if (!containerRef.current) return;
 
     if (isWarning) {
       gsap.to(containerRef.current, {
-        scale: 1.05,
-        duration: 0.3,
-        ease: 'power2.inOut',
+        opacity: 0.7,
+        duration: 0.2,
+        ease: 'steps(2)',
         repeat: -1,
         yoyo: true,
       });
     } else {
       gsap.killTweensOf(containerRef.current);
       gsap.to(containerRef.current, {
-        scale: 1,
-        duration: 0.2,
+        opacity: 1,
+        duration: 0.1,
       });
     }
 
@@ -46,24 +42,11 @@ function TimerComponent({ timeLeft, maxTime, isWarning }: TimerProps) {
     };
   }, [isWarning]);
 
-  // Text color flash on low time
-  useEffect(() => {
-    if (!textRef.current) return;
-
-    if (isWarning && timeLeft <= 5) {
-      gsap.to(textRef.current, {
-        color: timeLeft % 2 === 0 ? '#ff0000' : '#ff6600',
-        duration: 0.3,
-      });
-    }
-  }, [timeLeft, isWarning]);
-
   // Get color based on time
   const getColor = () => {
-    if (timeLeft <= 5) return '#ff0000';
-    if (isWarning) return '#ff6600';
-    if (progress > 0.5) return '#00f5ff';
-    return '#ffff00';
+    if (timeLeft <= 5) return '#ff6b6b';
+    if (isWarning) return '#ffd93d';
+    return '#6bcf7f';
   };
 
   const color = getColor();
@@ -71,63 +54,52 @@ function TimerComponent({ timeLeft, maxTime, isWarning }: TimerProps) {
   return (
     <div
       ref={containerRef}
-      className="timer relative flex items-center justify-center"
+      className="timer flex flex-col items-center gap-2 p-4"
       style={{
-        filter: isWarning ? `drop-shadow(0 0 10px ${color})` : 'none',
+        background: 'var(--bg-card)',
+        border: '3px solid var(--border-color)',
+        boxShadow: 'var(--shadow-pixel)',
+        width: '120px',
       }}
     >
-      {/* SVG Ring */}
-      <svg
-        width="100"
-        height="100"
-        className="transform -rotate-90"
-        viewBox="0 0 100 100"
-      >
-        {/* Background ring */}
-        <circle
-          cx="50"
-          cy="50"
-          r={radius}
-          fill="none"
-          stroke="rgba(255, 255, 255, 0.1)"
-          strokeWidth="6"
-        />
-
-        {/* Progress ring */}
-        <circle
-          ref={ringRef}
-          cx="50"
-          cy="50"
-          r={radius}
-          fill="none"
-          stroke={color}
-          strokeWidth="6"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          style={{
-            transition: 'stroke-dashoffset 0.3s ease, stroke 0.3s ease',
-            filter: `drop-shadow(0 0 5px ${color})`,
-          }}
-        />
-      </svg>
-
       {/* Time display */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
+      <div className="flex items-baseline gap-1">
         <span
           ref={textRef}
-          className="text-2xl font-bold"
-          style={{
-            color,
-            textShadow: `0 0 10px ${color}`,
-          }}
+          className="text-3xl font-bold"
+          style={{ color }}
         >
           {timeLeft}
         </span>
-        <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
-          seconds
-        </span>
+        <span className="text-xs opacity-70 uppercase">秒</span>
       </div>
+
+      {/* Progress bar */}
+      <div
+        className="w-full h-3"
+        style={{
+          background: 'var(--bg-secondary)',
+          border: '2px solid var(--border-color)',
+        }}
+      >
+        <div
+          ref={barRef}
+          className="h-full transition-all"
+          style={{
+            width: `${progress * 100}%`,
+            background: color,
+            transitionDuration: '0.3s',
+            transitionTimingFunction: 'steps(4)',
+          }}
+        />
+      </div>
+
+      {/* Warning text */}
+      {isWarning && (
+        <span className="text-xs font-bold uppercase" style={{ color }}>
+          {timeLeft <= 5 ? '⚠️ 快！' : '注意時間'}
+        </span>
+      )}
     </div>
   );
 }

@@ -1,7 +1,6 @@
 /**
- * Card Component - 3D Flip Card with GSAP animations
- * Enhanced with mouse tracking tilt + radial glow effect
- * @version 2.1.0
+ * Card Component - Pixel Style Flip Card
+ * @version 3.0.0 - Pixel Cute Adventure Edition
  */
 
 import { useRef, useEffect, memo, useCallback } from 'react';
@@ -9,17 +8,8 @@ import gsap from 'gsap';
 import type { CardProps } from '../types';
 import { PLAYER_COLORS } from '../utils/constants';
 
-// Tilt configuration
-const TILT_CONFIG = {
-  maxRotation: 15,      // Maximum rotation in degrees
-  glowIntensity: 0.8,   // Glow effect intensity (0-1)
-  perspective: 1000,    // 3D perspective depth
-  transitionSpeed: 0.3, // Hover transition speed
-  resetSpeed: 0.5,      // Reset animation speed
-};
-
 /**
- * Card component with 3D flip animation, mouse tracking tilt, and radial glow
+ * Simplified pixel-style card with flip animation
  */
 function CardComponent({
   card,
@@ -31,9 +21,6 @@ function CardComponent({
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
-  const glowRef = useRef<HTMLDivElement>(null);
-  const mouseGlowRef = useRef<HTMLDivElement>(null);
-  const symbolRef = useRef<HTMLSpanElement>(null);
 
   // Handle flip animation with GSAP
   useEffect(() => {
@@ -43,56 +30,38 @@ function CardComponent({
 
     gsap.to(innerRef.current, {
       rotateY: rotation,
-      duration: 0.6,
-      ease: 'back.out(1.5)',
+      duration: 0.4,
+      ease: 'steps(4)',
     });
   }, [card.isFlipped, card.isMatched]);
 
   // Handle match success effect
   useEffect(() => {
-    if (!showMatchEffect || !cardRef.current || !glowRef.current) return;
+    if (!showMatchEffect || !cardRef.current) return;
 
     const tl = gsap.timeline();
 
-    // Glow pulse
-    tl.to(glowRef.current, {
-      opacity: 1,
-      scale: 1.2,
-      duration: 0.3,
-      ease: 'power2.out',
+    // Pixel bounce
+    tl.to(cardRef.current, {
+      y: -8,
+      duration: 0.1,
+      ease: 'steps(2)',
     })
-      .to(glowRef.current, {
-        opacity: 0.6,
-        scale: 1,
-        duration: 0.5,
-        ease: 'power2.inOut',
-        repeat: 2,
-        yoyo: true,
+      .to(cardRef.current, {
+        y: 0,
+        duration: 0.1,
+        ease: 'steps(2)',
       })
-      .to(glowRef.current, {
-        opacity: 0,
-        duration: 0.3,
+      .to(cardRef.current, {
+        y: -4,
+        duration: 0.1,
+        ease: 'steps(2)',
+      })
+      .to(cardRef.current, {
+        y: 0,
+        duration: 0.1,
+        ease: 'steps(2)',
       });
-
-    // Card scale bounce
-    gsap.to(cardRef.current, {
-      scale: 1.1,
-      duration: 0.2,
-      yoyo: true,
-      repeat: 1,
-      ease: 'power2.out',
-    });
-
-    // Symbol celebration animation
-    if (symbolRef.current) {
-      gsap.to(symbolRef.current, {
-        scale: 1.3,
-        duration: 0.2,
-        yoyo: true,
-        repeat: 3,
-        ease: 'elastic.out(1, 0.3)',
-      });
-    }
 
     return () => {
       tl.kill();
@@ -103,119 +72,34 @@ function CardComponent({
   useEffect(() => {
     if (!showFailEffect || !cardRef.current) return;
 
-    // Shake animation
-    gsap.to(cardRef.current, {
-      keyframes: [
-        { x: -8, rotateZ: -2 },
-        { x: 8, rotateZ: 2 },
-        { x: -8, rotateZ: -2 },
-        { x: 8, rotateZ: 2 },
-        { x: 0, rotateZ: 0 },
-      ],
-      duration: 0.5,
-      ease: 'power2.inOut',
-    });
+    const tl = gsap.timeline();
 
-    // Red flash overlay
-    const overlay = cardRef.current.querySelector('.fail-overlay');
-    if (overlay) {
-      gsap.fromTo(
-        overlay,
-        { opacity: 0 },
-        { opacity: 0.6, duration: 0.1, yoyo: true, repeat: 5 }
-      );
-    }
-  }, [showFailEffect]);
-
-  // Mouse move handler for 3D tilt effect
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (disabled || card.isFlipped || card.isMatched) return;
-      if (!containerRef.current || !cardRef.current || !mouseGlowRef.current) return;
-
-      const rect = containerRef.current.getBoundingClientRect();
-
-      // Calculate mouse position relative to card center (-0.5 to 0.5)
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-
-      // Calculate rotation (inverted for natural feel)
-      // rotateX corresponds to Y axis, rotateY corresponds to X axis
-      const rotateX = -y * TILT_CONFIG.maxRotation;
-      const rotateY = x * TILT_CONFIG.maxRotation;
-
-      // Apply 3D transform with GSAP for smooth animation
-      gsap.to(cardRef.current, {
-        rotateX,
-        rotateY,
-        scale: 1.05,
-        duration: TILT_CONFIG.transitionSpeed,
-        ease: 'power2.out',
-      });
-
-      // Update radial glow position to follow mouse
-      const glowX = (x + 0.5) * 100;
-      const glowY = (y + 0.5) * 100;
-
-      gsap.to(mouseGlowRef.current, {
-        opacity: TILT_CONFIG.glowIntensity,
-        background: `radial-gradient(circle at ${glowX}% ${glowY}%, rgba(0, 245, 255, 0.4) 0%, rgba(157, 0, 255, 0.2) 40%, transparent 70%)`,
-        duration: 0.1,
-      });
-
-      // Parallax effect on symbol (subtle movement)
-      if (symbolRef.current) {
-        gsap.to(symbolRef.current, {
-          x: x * 10,
-          y: y * 10,
-          duration: TILT_CONFIG.transitionSpeed,
-          ease: 'power2.out',
-        });
-      }
-    },
-    [disabled, card.isFlipped, card.isMatched]
-  );
-
-  // Mouse leave handler - reset transforms
-  const handleMouseLeave = useCallback(() => {
-    if (!cardRef.current || !mouseGlowRef.current) return;
-
-    // Smooth reset animation
-    gsap.to(cardRef.current, {
-      rotateX: 0,
-      rotateY: 0,
-      scale: 1,
-      duration: TILT_CONFIG.resetSpeed,
-      ease: 'elastic.out(1, 0.5)',
-    });
-
-    // Fade out mouse glow
-    gsap.to(mouseGlowRef.current, {
-      opacity: 0,
-      duration: 0.3,
-    });
-
-    // Reset symbol position
-    if (symbolRef.current) {
-      gsap.to(symbolRef.current, {
+    // Pixel shake
+    tl.to(cardRef.current, {
+      x: -4,
+      duration: 0.05,
+      ease: 'steps(1)',
+    })
+      .to(cardRef.current, {
+        x: 4,
+        duration: 0.05,
+        ease: 'steps(1)',
+      })
+      .to(cardRef.current, {
+        x: -4,
+        duration: 0.05,
+        ease: 'steps(1)',
+      })
+      .to(cardRef.current, {
         x: 0,
-        y: 0,
-        duration: TILT_CONFIG.resetSpeed,
-        ease: 'elastic.out(1, 0.5)',
+        duration: 0.05,
+        ease: 'steps(1)',
       });
-    }
-  }, []);
 
-  // Mouse enter handler
-  const handleMouseEnter = useCallback(() => {
-    if (disabled || card.isFlipped || card.isMatched) return;
-
-    // Subtle lift effect
-    gsap.to(cardRef.current, {
-      boxShadow: '0 20px 40px rgba(157, 0, 255, 0.4), 0 0 30px rgba(0, 245, 255, 0.2)',
-      duration: 0.3,
-    });
-  }, [disabled, card.isFlipped, card.isMatched]);
+    return () => {
+      tl.kill();
+    };
+  }, [showFailEffect]);
 
   // Click handler
   const handleClick = useCallback(() => {
@@ -224,10 +108,10 @@ function CardComponent({
     // Click feedback animation
     gsap.to(cardRef.current, {
       scale: 0.95,
-      duration: 0.1,
+      duration: 0.05,
       yoyo: true,
       repeat: 1,
-      ease: 'power2.inOut',
+      ease: 'steps(1)',
     });
 
     onClick(card.id);
@@ -247,49 +131,22 @@ function CardComponent({
       ref={containerRef}
       data-card-id={card.id}
       className="card-container relative"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      onMouseEnter={handleMouseEnter}
       onClick={handleClick}
       style={{
         width: 'var(--card-width)',
         height: 'var(--card-height)',
-        perspective: `${TILT_CONFIG.perspective}px`,
+        perspective: '1000px',
         cursor: disabled || isRevealed ? 'default' : 'pointer',
       }}
     >
-      {/* Match success glow effect */}
-      <div
-        ref={glowRef}
-        className="absolute inset-0 rounded-xl opacity-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle, rgba(0, 255, 136, 0.8) 0%, rgba(0, 255, 136, 0.4) 40%, transparent 70%)',
-          filter: 'blur(15px)',
-          transform: 'scale(1.5)',
-          zIndex: 10,
-        }}
-      />
-
       {/* 3D Card wrapper */}
       <div
         ref={cardRef}
         className="card-3d-wrapper w-full h-full"
         style={{
           transformStyle: 'preserve-3d',
-          transition: 'box-shadow 0.3s ease',
-          borderRadius: '12px',
         }}
       >
-        {/* Mouse tracking glow overlay */}
-        <div
-          ref={mouseGlowRef}
-          className="absolute inset-0 rounded-xl opacity-0 pointer-events-none"
-          style={{
-            background: 'radial-gradient(circle at 50% 50%, rgba(0, 245, 255, 0.4) 0%, transparent 70%)',
-            zIndex: 5,
-          }}
-        />
-
         {/* Card inner (handles Y-axis flip rotation) */}
         <div
           ref={innerRef}
@@ -300,147 +157,47 @@ function CardComponent({
         >
           {/* Card Back (question mark side) */}
           <div
-            className="card-face card-back absolute inset-0 rounded-xl flex items-center justify-center overflow-hidden"
+            className="card-face card-back absolute inset-0 flex items-center justify-center"
             style={{
               backfaceVisibility: 'hidden',
-              background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%)',
-              border: '2px solid rgba(157, 0, 255, 0.6)',
-              boxShadow: '0 4px 20px rgba(157, 0, 255, 0.3), inset 0 0 30px rgba(157, 0, 255, 0.1)',
+              background: 'var(--bg-card)',
+              border: '3px solid var(--border-color)',
+              boxShadow: card.isMatched ? 'none' : 'var(--shadow-pixel)',
             }}
           >
-            {/* Animated background pattern */}
+            {/* Question mark */}
             <div
-              className="absolute inset-0 opacity-30"
+              className="text-4xl font-bold select-none"
               style={{
-                background: `
-                  repeating-linear-gradient(
-                    45deg,
-                    transparent,
-                    transparent 8px,
-                    rgba(157, 0, 255, 0.15) 8px,
-                    rgba(157, 0, 255, 0.15) 16px
-                  ),
-                  repeating-linear-gradient(
-                    -45deg,
-                    transparent,
-                    transparent 8px,
-                    rgba(0, 245, 255, 0.1) 8px,
-                    rgba(0, 245, 255, 0.1) 16px
-                  )
-                `,
-              }}
-            />
-
-            {/* Inner glow border */}
-            <div
-              className="absolute inset-1 rounded-lg"
-              style={{
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: 'inset 0 0 20px rgba(157, 0, 255, 0.2)',
-              }}
-            />
-
-            {/* Question mark with glow */}
-            <div
-              className="relative z-10 text-5xl font-bold select-none"
-              style={{
-                color: 'rgba(255, 255, 255, 0.9)',
-                textShadow: `
-                  0 0 10px rgba(157, 0, 255, 0.8),
-                  0 0 20px rgba(157, 0, 255, 0.6),
-                  0 0 40px rgba(157, 0, 255, 0.4)
-                `,
+                color: 'var(--text-primary)',
               }}
             >
               ?
             </div>
-
-            {/* Corner decorations */}
-            <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-purple-500/50 rounded-tl" />
-            <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-purple-500/50 rounded-tr" />
-            <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-purple-500/50 rounded-bl" />
-            <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-purple-500/50 rounded-br" />
-
-            {/* Fail overlay */}
-            <div
-              className="fail-overlay absolute inset-0 rounded-xl opacity-0 pointer-events-none"
-              style={{
-                backgroundColor: 'rgba(255, 50, 50, 0.6)',
-                boxShadow: 'inset 0 0 30px rgba(255, 0, 0, 0.5)',
-              }}
-            />
           </div>
 
           {/* Card Front (symbol side) */}
           <div
-            className="card-face card-front absolute inset-0 rounded-xl flex items-center justify-center overflow-hidden"
+            className="card-face card-front absolute inset-0 flex items-center justify-center"
             style={{
               backfaceVisibility: 'hidden',
               transform: 'rotateY(180deg)',
-              background: card.isMatched && playerColor
-                ? `linear-gradient(135deg, ${playerColor}20 0%, ${playerColor}10 50%, ${playerColor}15 100%)`
-                : 'linear-gradient(135deg, #1e1e4f 0%, #2d2d6a 50%, #1a1a3f 100%)',
-              border: card.isMatched && playerColor
-                ? `3px solid ${playerColor}`
-                : '2px solid rgba(0, 245, 255, 0.6)',
-              boxShadow: card.isMatched && playerColor
-                ? `0 4px 30px ${playerColor}80, inset 0 0 30px ${playerColor}30, 0 0 50px ${playerColor}40`
-                : '0 4px 20px rgba(0, 245, 255, 0.3), inset 0 0 20px rgba(0, 245, 255, 0.1)',
+              background: playerColor || 'var(--bg-card)',
+              border: `3px solid ${playerColor || 'var(--border-color)'}`,
+              boxShadow: card.isMatched ? 'var(--shadow-pixel)' : 'var(--shadow-pixel)',
             }}
           >
-            {/* Background shimmer effect for matched cards */}
-            {card.isMatched && playerColor && (
+            {/* Symbol */}
+            {isRevealed && (
               <div
-                className="absolute inset-0 opacity-20"
+                className="text-5xl select-none"
                 style={{
-                  background: `linear-gradient(45deg, transparent 30%, ${playerColor}30 50%, transparent 70%)`,
-                  animation: 'shimmer 2s infinite',
+                  filter: card.isMatched ? 'none' : 'grayscale(0%)',
                 }}
-              />
+              >
+                {card.symbol}
+              </div>
             )}
-
-            {/* Inner glow border */}
-            <div
-              className="absolute inset-1 rounded-lg"
-              style={{
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: card.isMatched && playerColor
-                  ? `inset 0 0 20px ${playerColor}40`
-                  : 'inset 0 0 15px rgba(0, 245, 255, 0.15)',
-              }}
-            />
-
-            {/* Symbol with parallax effect */}
-            <span
-              ref={symbolRef}
-              className="relative z-10 text-5xl select-none"
-              style={{
-                filter: card.isMatched && playerColor
-                  ? `drop-shadow(0 0 15px ${playerColor}) drop-shadow(0 0 30px ${playerColor}80)`
-                  : 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))',
-                transform: 'translateZ(20px)',
-              }}
-            >
-              {card.symbol}
-            </span>
-
-            {/* Corner decorations */}
-            <div
-              className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 rounded-tl"
-              style={{ borderColor: card.isMatched && playerColor ? `${playerColor}80` : 'rgba(0, 245, 255, 0.5)' }}
-            />
-            <div
-              className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 rounded-tr"
-              style={{ borderColor: card.isMatched && playerColor ? `${playerColor}80` : 'rgba(0, 245, 255, 0.5)' }}
-            />
-            <div
-              className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 rounded-bl"
-              style={{ borderColor: card.isMatched && playerColor ? `${playerColor}80` : 'rgba(0, 245, 255, 0.5)' }}
-            />
-            <div
-              className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 rounded-br"
-              style={{ borderColor: card.isMatched && playerColor ? `${playerColor}80` : 'rgba(0, 245, 255, 0.5)' }}
-            />
           </div>
         </div>
       </div>
@@ -448,14 +205,4 @@ function CardComponent({
   );
 }
 
-// Memoize to prevent unnecessary re-renders
-export const Card = memo(CardComponent, (prevProps, nextProps) => {
-  return (
-    prevProps.card.id === nextProps.card.id &&
-    prevProps.card.isFlipped === nextProps.card.isFlipped &&
-    prevProps.card.isMatched === nextProps.card.isMatched &&
-    prevProps.disabled === nextProps.disabled &&
-    prevProps.showMatchEffect === nextProps.showMatchEffect &&
-    prevProps.showFailEffect === nextProps.showFailEffect
-  );
-});
+export const Card = memo(CardComponent);
