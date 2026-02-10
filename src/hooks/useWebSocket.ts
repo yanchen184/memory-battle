@@ -143,6 +143,16 @@ export function useWebSocket(): UseWebSocketReturn {
 
         case 'MATCH_RESULT':
           if (message.isMatch) {
+            // 🔊 播放配對成功音效
+            if (typeof window !== 'undefined') {
+              try {
+                const { soundManager } = await import('../utils/sound');
+                soundManager.playMatch();
+              } catch (e) {
+                console.warn('[WS] Failed to play match sound:', e);
+              }
+            }
+            
             setRoomState(prev => {
               if (!prev) return prev;
               const newCards = [...prev.cards];
@@ -153,7 +163,7 @@ export function useWebSocket(): UseWebSocketReturn {
               // Update player score
               const newPlayers = prev.players.map(p =>
                 p.id === message.playerId
-                  ? { ...p, score: message.playerScore as number }
+                  ? { ...p, score: message.playerScore as number, collectedCards: (message as any).collectedCards || p.collectedCards }
                   : p
               );
               return {
@@ -164,6 +174,15 @@ export function useWebSocket(): UseWebSocketReturn {
               };
             });
           } else {
+            // 🔊 播放配對失敗音效
+            if (typeof window !== 'undefined') {
+              try {
+                const { soundManager } = await import('../utils/sound');
+                soundManager.playMismatch();
+              } catch (e) {
+                console.warn('[WS] Failed to play mismatch sound:', e);
+              }
+            }
             // No match - cards will flip back
             setTimeout(() => {
               if (!mountedRef.current) return;

@@ -24,22 +24,27 @@ function CardComponent({
   const innerRef = useRef<HTMLDivElement>(null);
 
   // Handle flip animation with GSAP
+  const prevFlippedRef = useRef(card.isFlipped);
+  
   useEffect(() => {
     if (!innerRef.current) return;
 
     const rotation = card.isFlipped || card.isMatched ? 180 : 0;
 
-    // Play flip sound when flipping
-    if (card.isFlipped && !card.isMatched) {
+    // Play flip sound when flipping (only on state change from false to true)
+    if (card.isFlipped && !prevFlippedRef.current && !card.isMatched) {
+      console.log('[Card] Playing flip sound for card:', card.id);
       soundManager.playFlip();
     }
+    
+    prevFlippedRef.current = card.isFlipped;
 
     gsap.to(innerRef.current, {
       rotateY: rotation,
       duration: 0.4,
       ease: 'steps(4)',
     });
-  }, [card.isFlipped, card.isMatched]);
+  }, [card.isFlipped, card.isMatched, card.id]);
 
   // Handle match success effect
   useEffect(() => {

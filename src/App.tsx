@@ -298,32 +298,74 @@ function AppContent() {
     }
   }, [gameMode, roomState, gameHistory.length]);
 
-  // 🆕 線上模式歷史記錄 - 記錄配對事件
+  // 🆕 線上模式歷史記錄 - 監聽 WebSocket 事件
+  const lastFlippedCardsRef = useRef<{ cardIndex: number; symbol: string; playerId: string; playerName: string }[]>([]);
+  
+  useEffect(() => {
+    if (gameMode !== 'online' || !roomState) return;
+    
+    // 當遊戲重新開始時清空歷史
+    if (roomState.status === 'playing' && roomState.matchedPairs === 0 && gameHistory.length > 0) {
+      setGameHistory([]);
+      turnCounterRef.current = 0;
+      lastFlippedCardsRef.current = [];
+    }
+  }, [gameMode, roomState, gameHistory.length]);
+  
+  // 🆕 記錄翻牌事件（透過 flipped cards 變化檢測）
   useEffect(() => {
     if (gameMode !== 'online' || !roomState) return;
     if (roomState.status !== 'playing') return;
     
-    // 檢測配對變化
+    const currentFlippedCards = roomState.cards.filter(c => c.isFlipped && !c.isMatched);
+    
+    // 當有兩張卡片翻開時，記錄翻牌動作
+    if (currentFlippedCards.length === 2 && lastFlippedCardsRef.current.length < 2) {
+      const currentPlayer = roomState.players[roomState.currentPlayerIndex];
+      
+      turnCounterRef.current++;
+      
+      const entry: HistoryEntry = {
+        id: `flip-${Date.now()}`,
+        turnNumber: turnCounterRef.current,
+        playerName: currentPlayer.name,
+        playerNumber: (roomState.currentPlayerIndex + 1) as 1 | 2,
+        action: 'flip',
+        cards: currentFlippedCards.map(c => c.symbol || '?'),
+        timestamp: Date.now(),
+      };
+      
+      setGameHistory(prev => [...prev, entry]);
+    }
+    
+    // 重置翻牌記錄（當卡片被翻回或配對後）
+    if (currentFlippedCards.length === 0 && lastFlippedCardsRef.current.length > 0) {
+      lastFlippedCardsRef.current = [];
+    }
+  }, [gameMode, roomState, gameHistory]);
+  
+  // 🆕 記錄配對事件
+  useEffect(() => {
+    if (gameMode !== 'online' || !roomState) return;
+    if (roomState.status !== 'playing') return;
+    
     const prevMatched = prevMatchedPairsRef.current;
     const currentMatched = roomState.matchedPairs;
     
     if (currentMatched > prevMatched) {
-      // 有新的配對！找到配對的玩家
+      // 配對成功
       const players = roomState.players;
       const matchingPlayer = players.find(p => p.score === currentMatched);
       
       if (matchingPlayer) {
-        // 找到配對的卡片（最近配對的）
         const matchedCards = roomState.cards.filter(c => c.isMatched);
-        const recentlyMatched = matchedCards.slice(-2); // 最後兩張
-        
-        turnCounterRef.current++;
+        const recentlyMatched = matchedCards.slice(-2);
         
         const entry: HistoryEntry = {
           id: `match-${Date.now()}`,
           turnNumber: turnCounterRef.current,
           playerName: matchingPlayer.name,
-          playerNumber: players.indexOf(matchingPlayer) === 0 ? 1 : 2,
+          playerNumber: (players.indexOf(matchingPlayer) + 1) as 1 | 2,
           action: 'match',
           cards: recentlyMatched.map(c => c.symbol || '?'),
           timestamp: Date.now(),
@@ -334,7 +376,7 @@ function AppContent() {
       
       prevMatchedPairsRef.current = currentMatched;
     }
-  }, [gameMode, roomState, gameHistory]);
+  }, [gameMode, roomState]);
 
   // Mode selection screen
   if (gameMode === 'select') {
@@ -577,6 +619,7 @@ function AppContent() {
       score: onlinePlayers[0]?.score || 0,
       isReady: true,
       isConnected: true,
+      collectedCards: (onlinePlayers[0] as any)?.collectedCards || [],
     };
     const player2: Player = {
       id: onlinePlayers[1]?.id || '2',
@@ -585,6 +628,7 @@ function AppContent() {
       score: onlinePlayers[1]?.score || 0,
       isReady: true,
       isConnected: true,
+      collectedCards: (onlinePlayers[1] as any)?.collectedCards || [],
     };
 
     const isTimerWarning = roomState.turnTimeLeft <= GAME_CONFIG.TIMER_WARNING_THRESHOLD;
