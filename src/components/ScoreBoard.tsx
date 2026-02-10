@@ -21,14 +21,7 @@ function ScoreBoardComponent({
   const player2Percentage = (player2Score / totalScore) * 100;
 
   return (
-    <div className="scoreboard glass-panel p-4 w-full max-w-md mx-auto">
-      {/* Header */}
-      <div className="text-center mb-3">
-        <span className="text-xs font-bold uppercase tracking-widest">
-          ⚔️ 分數對戰
-        </span>
-      </div>
-
+    <div className="scoreboard p-3 w-full max-w-md mx-auto">
       {/* Score comparison bar */}
       <div 
         className="score-bar relative h-8 overflow-hidden"

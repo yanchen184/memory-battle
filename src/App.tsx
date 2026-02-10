@@ -686,46 +686,16 @@ function AppContent() {
             />
           </div>
           
-          {/* 🆕 遊戲板 + 歷史記錄並排 */}
-          <div className="flex gap-4 items-start justify-center w-full max-w-6xl">
-            {/* 遊戲板 */}
-            <div className="flex-shrink-0">
-              <GameBoard
-                cards={onlineCards}
-                onCardClick={handleCardClick}
-                disabled={!isMyTurn || roomState.status === 'finished'}
-                gridCols={gridCols}
-              />
-            </div>
+          {/* 遊戲板 */}
+          <GameBoard
+            cards={onlineCards}
+            onCardClick={handleCardClick}
+            disabled={!isMyTurn || roomState.status === 'finished'}
+            gridCols={gridCols}
+          />
 
-            {/* 歷史記錄 */}
-            <div 
-              className="flex-shrink-0"
-              style={{
-                width: '300px',
-                background: 'var(--bg-card)',
-                border: '3px solid var(--border-color)',
-                boxShadow: 'var(--shadow-pixel)',
-              }}
-            >
-              <div 
-                className="px-4 py-2"
-                style={{
-                  borderBottom: '3px solid var(--border-color)',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                }}
-              >
-                <h3 className="text-sm font-bold" style={{ color: '#4dd4ff' }}>
-                  📜 遊戲記錄
-                </h3>
-              </div>
-              <div className="p-4">
-                <GameHistory history={gameHistory} isCompact={true} />
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-4">
+          {/* 分數條 */}
+          <div className="mt-6 w-full max-w-xl">
             <ScoreBoard
               player1Score={player1.score}
               player2Score={player2.score}
@@ -1045,125 +1015,99 @@ function WaitingRoom({ roomState, onLeave }: WaitingRoomProps) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8">
-      <div className="glass-panel p-8 text-center max-w-md">
-        <h2 className="text-2xl font-bold mb-6" style={{ color: '#ff00ff' }}>
-          等待對手加入...
-        </h2>
-
-        {/* Room Code Display */}
-        <div className="mb-6 p-6 rounded-xl" style={{
-          background: 'linear-gradient(135deg, rgba(0, 245, 255, 0.1) 0%, rgba(157, 0, 255, 0.1) 100%)',
-          border: '2px solid rgba(0, 245, 255, 0.3)',
-          boxShadow: '0 0 30px rgba(0, 245, 255, 0.2)',
-        }}>
-          <p className="text-sm text-[var(--text-muted)] mb-2">房間代碼</p>
-          <p 
-            className="text-5xl font-mono font-bold mb-4 tracking-wider"
-            style={{ 
-              color: '#00f5ff',
-              textShadow: '0 0 20px rgba(0, 245, 255, 0.8)',
-              letterSpacing: '0.15em',
-            }}
-          >
-            {roomState.id}
-          </p>
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-8" style={{
+      background: 'var(--bg-primary)',
+    }}>
+      <div className="w-full max-w-2xl">
+        {/* 超大房間號顯示 */}
+        <div className="text-center mb-8">
+          <h2 className="text-sm font-bold mb-4 uppercase tracking-widest opacity-60">
+            等待對手加入
+          </h2>
           
-          {/* Copy Button */}
-          <button
-            onClick={copyRoomCode}
-            className="px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:scale-105 active:scale-95"
+          <div 
+            className="pixel-button p-12 mb-6"
             style={{
-              background: copied 
-                ? 'linear-gradient(135deg, #00ff88 0%, #00f5ff 100%)'
-                : 'linear-gradient(135deg, #00f5ff 0%, #9d00ff 100%)',
-              color: '#000',
-              boxShadow: copied
-                ? '0 4px 20px rgba(0, 255, 136, 0.4)'
-                : '0 4px 20px rgba(0, 245, 255, 0.4)',
+              background: 'var(--bg-card)',
+              border: '4px solid #6bcf7f',
+              boxShadow: '0 0 40px rgba(107, 207, 127, 0.3), var(--shadow-pixel-hover)',
             }}
           >
-            {copied ? (
-              <>
-                <span className="mr-2">✓</span>
-                已複製！
-              </>
-            ) : (
-              <>
-                <span className="mr-2">📋</span>
-                複製代碼
-              </>
-            )}
-          </button>
+            <p className="text-xs opacity-50 mb-3 uppercase tracking-widest">房間代碼</p>
+            <p 
+              className="font-mono font-black mb-6"
+              style={{ 
+                fontSize: '4rem',
+                color: '#6bcf7f',
+                textShadow: '4px 4px 0px rgba(0,0,0,0.3)',
+                letterSpacing: '0.3em',
+              }}
+            >
+              {roomState.id}
+            </p>
+            
+            {/* 超大複製按鈕 */}
+            <button
+              onClick={copyRoomCode}
+              className="pixel-button w-full py-4 text-xl font-bold"
+              style={{
+                background: copied ? '#00ff88' : '#6bcf7f',
+                color: 'var(--text-primary)',
+              }}
+            >
+              {copied ? '✓ 已複製！' : '📋 點擊複製代碼'}
+            </button>
+          </div>
+          
+          <p className="text-sm opacity-70">
+            將代碼分享給朋友，讓他們「加入房間」
+          </p>
         </div>
 
-        {/* Instructions */}
-        <div className="mb-6 p-4 rounded-lg" style={{
-          background: 'rgba(255, 255, 255, 0.05)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-        }}>
-          <p className="text-sm text-[var(--text-secondary)]">
-            📤 將房間代碼分享給朋友
-          </p>
-          <p className="text-xs text-[var(--text-muted)] mt-1">
-            對方在「加入房間」輸入此代碼即可開始遊戲
-          </p>
-        </div>
-
-        {/* Players */}
-        <div className="flex items-center justify-center gap-6 mb-6">
+        {/* 簡潔的玩家顯示 */}
+        <div className="flex items-center justify-center gap-8 mb-8">
           {roomState.players.map((player, idx) => (
             <div key={idx} className="text-center">
               <div 
-                className="text-5xl mb-2 p-3 rounded-xl"
+                className="text-6xl mb-2 w-24 h-24 flex items-center justify-center pixel-button"
                 style={{
-                  background: 'rgba(0, 255, 136, 0.1)',
-                  border: '2px solid rgba(0, 255, 136, 0.3)',
+                  background: '#6bcf7f',
+                  border: '3px solid var(--border-color)',
                 }}
               >
                 {player.avatar}
               </div>
-              <p className="text-sm font-medium">{player.name}</p>
-              <p className="text-xs text-[var(--neon-cyan)]">房主</p>
+              <p className="text-sm font-bold">{player.name}</p>
             </div>
           ))}
+          
+          <div className="text-4xl mx-4 opacity-50">VS</div>
+          
           {roomState.players.length < 2 && (
             <div className="text-center">
               <div 
-                className="text-5xl mb-2 p-3 rounded-xl animate-pulse"
+                className="text-6xl mb-2 w-24 h-24 flex items-center justify-center pixel-button animate-pulse"
                 style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '2px dashed rgba(255, 255, 255, 0.2)',
+                  background: 'var(--bg-card)',
+                  border: '3px dashed var(--border-color)',
+                  opacity: 0.3,
                 }}
               >
                 ?
               </div>
-              <p className="text-sm text-[var(--text-muted)]">等待中...</p>
+              <p className="text-sm opacity-50">等待中</p>
             </div>
           )}
         </div>
 
-        {/* Status */}
-        <div className="mb-6 flex items-center justify-center gap-2 text-[var(--text-muted)]">
-          <span className="inline-block animate-spin text-xl">⏳</span>
-          <span className="animate-pulse">等待對手加入房間...</span>
-        </div>
-
-        {/* Leave Button */}
+        {/* 離開按鈕 */}
         <button
           onClick={onLeave}
-          className="px-6 py-2 rounded-lg border-2 transition-all duration-300 hover:scale-105"
+          className="pixel-button px-6 py-3 text-sm font-bold"
           style={{
-            borderColor: 'var(--neon-pink)',
-            color: 'var(--neon-pink)',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'var(--neon-pink)';
-            e.currentTarget.style.color = '#000';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent';
-            e.currentTarget.style.color = 'var(--neon-pink)';
+            background: 'var(--bg-card)',
+            border: '3px solid var(--border-color)',
+            color: 'var(--text-muted)',
           }}
         >
           離開房間
